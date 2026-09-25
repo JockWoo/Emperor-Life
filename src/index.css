@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #090c13;
+    color: #e2dfd2;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom Imperial Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f141f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a3449;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}
+
+/* Subtle glow keyframe */
+@keyframes pulseGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(234, 179, 8, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 14px rgba(234, 179, 8, 0.8));
+  }
+}
+
+.animate-imperial-glow {
+  animation: pulseGlow 2.5s infinite ease-in-out;
+}
