@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
-  base: './',
+  base: process.env.GITHUB_ACTIONS ? '/Emperor-Life/' : './',
   server: {
     port: 5173,
     host: true
