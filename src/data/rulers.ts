@@ -3,11 +3,11 @@ import { Ruler, CountryId } from '../types/game';
 export const INITIAL_RULERS: Record<CountryId, Ruler> = {
   qin: {
     id: 'qin',
-    name: 'Qin Shi Huang (嬴政)',
-    dynasty: 'Qin (秦)',
-    title: 'First Emperor (始皇帝)',
-    color: '#334155', // Iron slate black
-    accentColor: '#fbbf24', // Bronze gold
+    name: '嬴政',
+    dynasty: '秦',
+    title: '始皇帝',
+    color: '#334155', // 鐵玄黑
+    accentColor: '#fbbf24', // 青銅金
     portrait: '🐉',
     baseAge: 22,
     currentAge: 22,
@@ -21,17 +21,17 @@ export const INITIAL_RULERS: Record<CountryId, Ruler> = {
       diplomacy: 30,
       talentUtilization: 78,
       adaptability: 70,
-      description: 'Iron-fisted conqueror prioritizing total centralization, standard laws, and relentless imperial conquest.'
+      description: '崇尚法治與絕對集權，以雷霆萬鈞之勢橫掃六合，銳意開疆拓土。'
     },
-    bio: 'Unify all under heaven with absolute legalism, vast territorial conquest, and grand architectural works.',
+    bio: '行法家嚴律，書同文、車同軌，築萬里長城，志在開創萬世不拔之基業。',
     historicalQuote: '朕為始皇帝。後世以計數，二世三世至於萬世，傳之無窮！'
   },
   han: {
     id: 'han',
-    name: 'Liu Bang (劉邦)',
-    dynasty: 'Han (漢)',
-    title: 'Emperor Gaozu (高祖)',
-    color: '#b91c1c', // Imperial red
+    name: '劉邦',
+    dynasty: '漢',
+    title: '漢高祖',
+    color: '#b91c1c', // 赤帝朱紅
     accentColor: '#fde047',
     portrait: '🦅',
     baseAge: 32,
@@ -46,17 +46,17 @@ export const INITIAL_RULERS: Record<CountryId, Ruler> = {
       diplomacy: 90,
       talentUtilization: 96,
       adaptability: 95,
-      description: 'Charismatic leader who excels at recruiting geniuses, flexible maneuvering, and opportunistic diplomacy.'
+      description: '胸襟開闊且善於用人，應變機敏，長於縱橫捭闔與籠絡豪傑。'
     },
-    bio: 'Rose from common grass to master the realm by placing absolute trust in unmatched strategists and commanders.',
+    bio: '起於布衣提三尺劍取天下，知人善任，深諳退讓與乘虛而入的博弈之道。',
     historicalQuote: '大風起兮雲飛揚，威加海內兮歸故鄉，安得猛士兮守四方！'
   },
   sui: {
     id: 'sui',
-    name: 'Yang Jian (楊堅)',
-    dynasty: 'Sui (隋)',
-    title: 'Emperor Wen (文帝)',
-    color: '#d97706', // Ocher amber
+    name: '楊堅',
+    dynasty: '隋',
+    title: '隋文帝',
+    color: '#d97706', // 赭黃琥珀
     accentColor: '#fef3c7',
     portrait: '🌾',
     baseAge: 30,
@@ -71,17 +71,17 @@ export const INITIAL_RULERS: Record<CountryId, Ruler> = {
       diplomacy: 68,
       talentUtilization: 82,
       adaptability: 78,
-      description: 'Master statesman focused on national granaries, civil examinations, legal reform, and immense economic wealth.'
+      description: '長於綜理政事、節儉愛民，開創科舉與三省六部，天下殷實。'
     },
-    bio: 'Consolidator of fractured realms whose Kaihuang reign established unmatched grain granaries and administrative order.',
+    bio: '終結南北紛爭分裂，置常平倉、立開皇律，使天下府庫充盈、戶口大增。',
     historicalQuote: '百姓何辜，罹此荼毒！當行仁政，藏富於民，開皇之治！'
   },
   tang: {
     id: 'tang',
-    name: 'Li Yuan (李淵)',
-    dynasty: 'Tang (唐)',
-    title: 'Emperor Gaozu (高祖)',
-    color: '#eab308', // Royal saffron gold
+    name: '李淵',
+    dynasty: '唐',
+    title: '唐高祖',
+    color: '#eab308', // 盛唐赭黃
     accentColor: '#451a03',
     portrait: '🐎',
     baseAge: 35,
@@ -96,17 +96,17 @@ export const INITIAL_RULERS: Record<CountryId, Ruler> = {
       diplomacy: 82,
       talentUtilization: 90,
       adaptability: 84,
-      description: 'Pragmatic aristocrat blending elite cavalry, open multi-ethnic diplomacy, and formidable military princes.'
+      description: '審時度勢、文武兼備，善用精銳騎兵與和親納降之策定鼎中原。'
     },
-    bio: 'Founder of the glorious Golden Age, skillfully balancing northern nomadic alliances and southern pacification.',
+    bio: '自晉陽起兵逐鹿天下，兼融胡漢諸部，廣納天下英雄，開啟盛唐基業。',
     historicalQuote: '晉陽起兵，撫馭英雄，建號大唐，安輯兆庶！'
   },
   song: {
     id: 'song',
-    name: 'Zhao Kuangyin (趙匡胤)',
-    dynasty: 'Song (宋)',
-    title: 'Emperor Taizu (太祖)',
-    color: '#0284c7', // Celestial cyan / sapphire
+    name: '趙匡胤',
+    dynasty: '宋',
+    title: '宋太祖',
+    color: '#0284c7', // 天青霽藍
     accentColor: '#e0f2fe',
     portrait: '📜',
     baseAge: 29,
@@ -121,17 +121,17 @@ export const INITIAL_RULERS: Record<CountryId, Ruler> = {
       diplomacy: 85,
       talentUtilization: 88,
       adaptability: 82,
-      description: 'Shrewd military reformer who dissolved rival warlord power peacefully over wine and elevated civilian governance.'
+      description: '崇文抑武、謹慎防弊，善於和平收攬軍權，注重內治商貿。'
     },
-    bio: 'Master of stable statecraft, civil prosperity, and commercial innovation, cautious in foreign war but resilient in defense.',
+    bio: '陳橋兵變黃袍加身，杯酒釋兵權以消藩鎮之患，崇尚文治與商貿繁榮。',
     historicalQuote: '杯酒釋兵權，臥榻之側，豈容他人鼾睡乎！'
   },
   ming: {
     id: 'ming',
-    name: 'Zhu Yuanzhang (朱元璋)',
-    dynasty: 'Ming (明)',
-    title: 'Hongwu Emperor (洪武帝)',
-    color: '#ea580c', // Fiery vermilion
+    name: '朱元璋',
+    dynasty: '明',
+    title: '洪武帝',
+    color: '#ea580c', // 烈火朱丹
     accentColor: '#ffedd5',
     portrait: '🔥',
     baseAge: 28,
@@ -146,17 +146,17 @@ export const INITIAL_RULERS: Record<CountryId, Ruler> = {
       diplomacy: 42,
       talentUtilization: 68,
       adaptability: 82,
-      description: 'Unyielding peasant emperor who purged corruption with terror, rebuilt agrarian society, and led relentless northern strikes.'
+      description: '鐵腕肅貪、極度集權，力促農桑生息，對北伐用兵意志堅決。'
     },
-    bio: 'Rose from mendicant monk to expel foreign invaders and establish the most tightly controlled centralized court in history.',
+    bio: '起自草莽布衣平定群雄、驅逐胡虜，制定大明律，整飭綱紀不容纖毫舞弊。',
     historicalQuote: '驅除胡虜，恢復中華，立綱陳紀，救濟斯民！'
   },
   qing: {
     id: 'qing',
-    name: 'Hong Taiji (皇太極)',
-    dynasty: 'Qing (清)',
-    title: 'Emperor Taizong (太宗)',
-    color: '#4338ca', // Royal indigo navy
+    name: '皇太極',
+    dynasty: '清',
+    title: '清太宗',
+    color: '#4338ca', // 八旗靛青
     accentColor: '#e0e7ff',
     portrait: '🏹',
     baseAge: 27,
@@ -171,9 +171,9 @@ export const INITIAL_RULERS: Record<CountryId, Ruler> = {
       diplomacy: 86,
       talentUtilization: 88,
       adaptability: 90,
-      description: 'Strategic military visionary who integrated the Eight Banners, adopted firearms, and allied with steppe Mongols.'
+      description: '精擅八旗治軍與滿漢融通，引入紅衣大砲，善用攻堅與同盟策略。'
     },
-    bio: 'Architect of the Great Qing, transforming tribal banner warriors into an unstoppable imperial coalition.',
+    bio: '改國號為大清，降服漠南蒙古，創設滿漢八旗，為入主中原奠定雄厚基石。',
     historicalQuote: '崇德易名，撫順四方，融會漢滿蒙，定鼎中原！'
   }
 };

@@ -22,16 +22,16 @@ export const YearSummaryModal: React.FC<YearSummaryModalProps> = ({
         <div className="flex items-center justify-between border-b border-gray-800 pb-3">
           <div>
             <span className="text-xs uppercase tracking-widest text-amber-400 font-bold">
-              Annual Chronicle · 歲末年報
+              歲末年報
             </span>
             <h2 className="text-2xl font-black text-white font-serif tracking-wider">
-              YEAR {turnResult.year - 1} OF THE REIGN
+              在位第 {turnResult.year - 1} 年
             </h2>
           </div>
           <div className="text-right">
-            <div className="text-xs text-gray-400">Emperor Age</div>
+            <div className="text-xs text-gray-400">君主年齡</div>
             <div className="text-xl font-bold text-amber-300 font-mono">
-              {playerCountry.ruler.currentAge}
+              {playerCountry.ruler.currentAge} 歲
             </div>
           </div>
         </div>
@@ -41,7 +41,7 @@ export const YearSummaryModal: React.FC<YearSummaryModalProps> = ({
           <div className="bg-black/50 border border-gray-800 rounded-lg p-3 text-xs">
             <div className="text-amber-400 font-bold mb-1.5 flex items-center gap-1.5">
               <span>🏛️</span>
-              <span>Imperial Council Resolution (廷議結果)</span>
+              <span>廷議決策結果</span>
             </div>
             <ul className="space-y-1 text-gray-300">
               {turnResult.playerEffectsSummary.map((item, idx) => (
@@ -59,14 +59,14 @@ export const YearSummaryModal: React.FC<YearSummaryModalProps> = ({
           <div className="bg-red-950/30 border border-red-900/50 rounded-lg p-3 text-xs">
             <div className="text-red-400 font-bold mb-1.5 flex items-center gap-1.5">
               <span>⚔️</span>
-              <span>Campaigns & Wars Resolved (天下烽火)</span>
+              <span>年度戰役交鋒</span>
             </div>
             <div className="space-y-1.5">
               {turnResult.wars.map((w, idx) => (
                 <div key={idx} className="text-gray-300 flex items-center justify-between bg-black/40 p-2 rounded">
                   <span>{w.summary}</span>
                   <span className="text-red-400 font-mono text-[11px] whitespace-nowrap ml-2">
-                    Casualties: -{w.attackerCasualties + w.defenderCasualties}k
+                    傷亡：{w.attackerCasualties + w.defenderCasualties} 萬
                   </span>
                 </div>
               ))}
@@ -79,7 +79,7 @@ export const YearSummaryModal: React.FC<YearSummaryModalProps> = ({
           <div className="bg-gray-900/70 border border-gray-700/60 rounded-lg p-3 text-xs">
             <div className="text-gray-300 font-bold mb-1.5 flex items-center gap-1.5">
               <span>🕯️</span>
-              <span>Passings & Memorials (朝堂輓歌)</span>
+              <span>重臣逝世誌哀</span>
             </div>
             <ul className="space-y-1 text-gray-400">
               {turnResult.deceasedCharacters.map((msg, idx) => (
@@ -96,10 +96,10 @@ export const YearSummaryModal: React.FC<YearSummaryModalProps> = ({
         <div className="bg-black/40 border border-gray-800 rounded-lg p-3 text-xs flex-1 max-h-48 overflow-y-auto">
           <div className="text-cyan-400 font-bold mb-1.5 flex items-center gap-1.5">
             <span>📜</span>
-            <span>World News Dispatch (九州風雲速遞)</span>
+            <span>天下消息速遞</span>
           </div>
           {turnResult.news.length === 0 ? (
-            <div className="text-gray-500 italic">The realm remained at peace this year.</div>
+            <div className="text-gray-500 italic">天下各方今年大體平靜，無特大動盪。</div>
           ) : (
             <ul className="space-y-1.5">
               {turnResult.news.map((n) => (
@@ -117,7 +117,7 @@ export const YearSummaryModal: React.FC<YearSummaryModalProps> = ({
           onClick={onProceed}
           className="w-full py-3 bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-700 hover:from-amber-500 hover:to-yellow-400 text-black font-black text-sm tracking-wider rounded-xl shadow-lg transition-all duration-150 hover:scale-[1.01] active:scale-95 cursor-pointer mt-1"
         >
-          ENTER YEAR {turnResult.year} (踏入新歲) ›
+          進入下一年 (第 {turnResult.year} 年) ›
         </button>
       </div>
     </div>

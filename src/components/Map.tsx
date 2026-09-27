@@ -11,6 +11,15 @@ interface MapProps {
   interactive?: boolean;
 }
 
+const TERRAIN_NAMES: Record<string, string> = {
+  plains: '平原',
+  mountains: '山地',
+  river: '水網',
+  hills: '丘陵',
+  plateau: '高原',
+  coast: '沿海'
+};
+
 export const Map: React.FC<MapProps> = ({
   regions,
   countries,
@@ -49,7 +58,7 @@ export const Map: React.FC<MapProps> = ({
       <div className="w-full flex flex-wrap items-center justify-between gap-2 px-2 py-1 mb-2 text-xs border-b border-[#232838]">
         <div className="flex items-center gap-2">
           <span className="font-bold text-[#d4af37] tracking-wider uppercase text-sm">天下輿圖</span>
-          <span className="text-gray-400">Realm of the Seven Emperors</span>
+          <span className="text-gray-400">七帝爭霸 · 萬里江山</span>
         </div>
         
         {/* Dynamic Country Badges */}
@@ -281,18 +290,18 @@ export const Map: React.FC<MapProps> = ({
               </span>
             </div>
 
-            <div className="text-[11px] text-gray-400 mb-2">{hoveredRegion.name}</div>
+            <div className="text-[11px] text-gray-400 mb-2">【{hoveredCountry.name}】疆域轄地</div>
 
             <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-gray-300 text-[11px]">
-              <div>Terrain: <span className="text-amber-300 font-medium capitalize">{hoveredRegion.terrain}</span></div>
-              <div>Pop: <span className="text-emerald-300 font-medium">{hoveredRegion.basePop}M</span></div>
-              <div>Annual Tax: <span className="text-yellow-300 font-medium">{hoveredRegion.baseWealth}🪙</span></div>
-              <div>Granary: <span className="text-lime-300 font-medium">{hoveredRegion.baseFood}🌾</span></div>
+              <div>地形：<span className="text-amber-300 font-medium">{TERRAIN_NAMES[hoveredRegion.terrain] || hoveredRegion.terrain}</span></div>
+              <div>人口：<span className="text-emerald-300 font-medium">{hoveredRegion.basePop} 萬</span></div>
+              <div>歲賦：<span className="text-yellow-300 font-medium">{hoveredRegion.baseWealth} 🪙</span></div>
+              <div>倉廩：<span className="text-lime-300 font-medium">{hoveredRegion.baseFood} 🌾</span></div>
             </div>
 
             {adjacentTargetIds.has(hoveredRegion.id) && (
               <div className="mt-2 pt-1.5 border-t border-gray-700/60 text-red-400 font-bold flex items-center gap-1 text-[11px]">
-                <span>⚔️ Adjacent Border: Can launch invasion!</span>
+                <span>⚔️ 接壤邊境：可發動戰役！</span>
               </div>
             )}
           </div>
@@ -306,7 +315,7 @@ export const Map: React.FC<MapProps> = ({
             <span className="text-lg">📍</span>
             <div>
               <div className="text-sm font-bold text-white flex items-center gap-2">
-                <span>{regions[selectedRegionId].chineseName} ({regions[selectedRegionId].name})</span>
+                <span>{regions[selectedRegionId].chineseName}</span>
                 <span
                   className="px-2 py-0.5 rounded text-[10px]"
                   style={{
@@ -314,11 +323,11 @@ export const Map: React.FC<MapProps> = ({
                     color: '#fff'
                   }}
                 >
-                  Owner: {countries[regions[selectedRegionId].countryId].name}
+                  所屬勢力：{countries[regions[selectedRegionId].countryId].name}
                 </span>
               </div>
               <div className="text-gray-400 text-[11px]">
-                Terrain: {regions[selectedRegionId].terrain} · Output: {regions[selectedRegionId].baseWealth} Wealth, {regions[selectedRegionId].baseFood} Food
+                地形：{TERRAIN_NAMES[regions[selectedRegionId].terrain] || regions[selectedRegionId].terrain} · 產出：{regions[selectedRegionId].baseWealth} 賦稅，{regions[selectedRegionId].baseFood} 糧草
               </div>
             </div>
           </div>
@@ -331,14 +340,14 @@ export const Map: React.FC<MapProps> = ({
                 className="px-4 py-1.5 bg-red-700 hover:bg-red-600 text-white font-bold rounded shadow-lg transition-all flex items-center gap-1.5 border border-red-500 hover:scale-105 active:scale-95"
               >
                 <span>⚔️</span>
-                <span>Launch Campaign (發動征伐)</span>
+                <span>發動戰役</span>
               </button>
             )}
             <button
               onClick={() => onSelectRegion && onSelectRegion('')}
               className="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded"
             >
-              Close
+              關閉
             </button>
           </div>
         </div>

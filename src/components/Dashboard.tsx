@@ -14,6 +14,21 @@ interface DashboardProps {
   onExpandAgriculture: () => void;
 }
 
+const ROLE_NAMES: Record<string, string> = {
+  general: '武將',
+  minister: '文官',
+  strategist: '謀臣'
+};
+
+const CATEGORY_NAMES: Record<string, string> = {
+  politics: '朝政',
+  military: '軍事',
+  diplomacy: '外交',
+  economy: '經濟',
+  disaster: '天災',
+  personal: '皇室'
+};
+
 export const Dashboard: React.FC<DashboardProps> = ({
   state,
   onMakeChoice,
@@ -64,20 +79,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 {ruler.name}
               </h2>
               <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                {playerCountry.name} Dynasty
+                {playerCountry.name}
               </span>
             </div>
             <div className="flex items-center gap-3 text-xs text-gray-400 mt-0.5">
               <span>
-                Reign: <strong className="text-amber-300 font-mono">Year {state.year}</strong> (元年 + {state.year - 1})
+                在位：<strong className="text-amber-300 font-mono">第 {state.year} 年</strong>
               </span>
               <span>•</span>
               <span>
-                Age: <strong className="text-white font-mono">{ruler.currentAge}</strong> / {ruler.maxAge}
+                年齡：<strong className="text-white font-mono">{ruler.currentAge}</strong> 歲 / 壽算約 {ruler.maxAge}
               </span>
               <span>•</span>
               <span>
-                Health: <strong className={`${ruler.health > 50 ? 'text-emerald-400' : 'text-red-400'} font-mono`}>{ruler.health}%</strong>
+                健康：<strong className={`${ruler.health > 50 ? 'text-emerald-400' : 'text-red-400'} font-mono`}>{ruler.health}%</strong>
               </span>
             </div>
           </div>
@@ -86,35 +101,35 @@ export const Dashboard: React.FC<DashboardProps> = ({
         {/* Core Resources Counter Matrix */}
         <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 text-center text-xs">
           <div className="bg-black/50 p-2 rounded border border-gray-800">
-            <div className="text-[10px] text-gray-400">🪙 Gold</div>
+            <div className="text-[10px] text-gray-400">🪙 國庫</div>
             <div className="font-bold text-yellow-300 font-mono text-sm">{playerCountry.treasury}</div>
           </div>
           <div className="bg-black/50 p-2 rounded border border-gray-800">
-            <div className="text-[10px] text-gray-400">🌾 Grain</div>
+            <div className="text-[10px] text-gray-400">🌾 糧食</div>
             <div className="font-bold text-lime-300 font-mono text-sm">{playerCountry.food}</div>
           </div>
           <div className="bg-black/50 p-2 rounded border border-gray-800">
-            <div className="text-[10px] text-gray-400">⚔️ Troops</div>
-            <div className="font-bold text-red-400 font-mono text-sm">{playerCountry.military}k</div>
+            <div className="text-[10px] text-gray-400">⚔️ 軍力</div>
+            <div className="font-bold text-red-400 font-mono text-sm">{playerCountry.military} 萬</div>
           </div>
           <div className="bg-black/50 p-2 rounded border border-gray-800">
-            <div className="text-[10px] text-gray-400">👥 Pop</div>
-            <div className="font-bold text-emerald-400 font-mono text-sm">{playerCountry.population}M</div>
+            <div className="text-[10px] text-gray-400">👥 人口</div>
+            <div className="font-bold text-emerald-400 font-mono text-sm">{playerCountry.population} 萬</div>
           </div>
           <div className="bg-black/50 p-2 rounded border border-gray-800">
-            <div className="text-[10px] text-gray-400">🗺️ Land</div>
+            <div className="text-[10px] text-gray-400">🗺️ 領土</div>
             <div className="font-bold text-amber-300 font-mono text-sm">{ownedRegionsCount}/35</div>
           </div>
           <div className="bg-black/50 p-2 rounded border border-gray-800">
-            <div className="text-[10px] text-gray-400">⚖️ Order</div>
+            <div className="text-[10px] text-gray-400">⚖️ 穩定度</div>
             <div className="font-bold text-cyan-300 font-mono text-sm">{playerCountry.stability}</div>
           </div>
           <div className="bg-black/50 p-2 rounded border border-gray-800">
-            <div className="text-[10px] text-gray-400">🚩 Morale</div>
+            <div className="text-[10px] text-gray-400">🚩 士氣</div>
             <div className="font-bold text-fuchsia-300 font-mono text-sm">{playerCountry.morale}</div>
           </div>
           <div className="bg-black/50 p-2 rounded border border-gray-800">
-            <div className="text-[10px] text-gray-400">🏛️ Admin</div>
+            <div className="text-[10px] text-gray-400">🏛️ 行政</div>
             <div className="font-bold text-blue-300 font-mono text-sm">{playerCountry.administration}</div>
           </div>
         </div>
@@ -126,14 +141,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
             className="px-3 py-2 bg-[#1e2538] hover:bg-[#28324a] text-amber-300 text-xs font-bold rounded-lg border border-amber-600/40 transition-all flex items-center gap-1.5 shadow"
           >
             <span>📜</span>
-            <span>Diplomacy (外交)</span>
+            <span>外交</span>
           </button>
           <button
             onClick={() => setShowHistory(true)}
             className="px-3 py-2 bg-[#1e2538] hover:bg-[#28324a] text-gray-200 text-xs font-bold rounded-lg border border-gray-700 transition-all flex items-center gap-1.5 shadow"
           >
             <span>📖</span>
-            <span>Chronicle (起居注)</span>
+            <span>歷史紀錄</span>
           </button>
         </div>
       </div>
@@ -155,7 +170,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {/* Imperial Quick Action Commands */}
           <div className="bg-[#141824] border border-[#262e42] rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
             <span className="text-gray-400 font-bold flex items-center gap-1">
-              <span>⚡</span> Imperial Decrees:
+              <span>⚡</span> 國策政令：
             </span>
             <div className="flex flex-wrap items-center gap-2">
               <button
@@ -163,14 +178,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 disabled={playerCountry.treasury < 50 || playerCountry.food < 40}
                 className="px-3 py-1.5 bg-red-950/70 hover:bg-red-900 border border-red-800 text-red-200 rounded font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
-                ⚔️ Recruit 20k Troops (-50🪙 -40🌾)
+                ⚔️ 招募軍隊 2萬 (-50國庫 -40糧食)
               </button>
               <button
                 onClick={onExpandAgriculture}
                 disabled={playerCountry.treasury < 40}
                 className="px-3 py-1.5 bg-emerald-950/70 hover:bg-emerald-900 border border-emerald-800 text-emerald-200 rounded font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
-                🌾 Reclamation & Granaries (-40🪙 +60🌾)
+                🌾 發展農業 (-40國庫 +60糧食)
               </button>
             </div>
           </div>
@@ -179,9 +194,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="bg-[#141824] border border-[#262e42] rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-                <span>👥</span> Founding Characters & Ministers (文武班底)
+                <span>👥</span> 開國臣將班底
               </h3>
-              <span className="text-[11px] text-gray-500">Affects campaign power and administration</span>
+              <span className="text-[11px] text-gray-500">輔助出征戰役與推行朝廷政務</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
@@ -200,16 +215,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       {!c.isAlive && <span className="text-[10px] text-red-500">⚰️</span>}
                     </span>
                     <span className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-gray-800 text-amber-300 font-mono">
-                      {c.role}
+                      {ROLE_NAMES[c.role] || c.role}
                     </span>
                   </div>
                   <div className="text-[11px] text-gray-400 truncate mb-1.5">
-                    {c.name} · Age {c.age}
+                    {c.specialty} · {c.age} 歲
                   </div>
                   <div className="grid grid-cols-3 gap-1 text-[10px] font-mono text-center bg-gray-900/60 p-1 rounded text-gray-300">
-                    <div>Mil: {c.military}</div>
-                    <div>Strat: {c.strategy}</div>
-                    <div>Loyal: {c.loyalty}%</div>
+                    <div>統帥: {c.military}</div>
+                    <div>智謀: {c.strategy}</div>
+                    <div>忠誠: {c.loyalty}%</div>
                   </div>
                 </div>
               ))}
@@ -225,9 +240,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {/* Event Badge & Category */}
               <div className="flex items-center justify-between border-b border-gray-800 pb-2">
                 <span className="px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                  {currentEvent.category.toUpperCase()} EVENT · 歲朝大計
+                  【{CATEGORY_NAMES[currentEvent.category] || currentEvent.category}】歲朝大計
                 </span>
-                <span className="text-xs text-gray-400 font-mono">Year {state.year}</span>
+                <span className="text-xs text-gray-400 font-mono">在位第 {state.year} 年</span>
               </div>
 
               {/* Title & Description */}
@@ -248,7 +263,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {/* Multiple Choices List */}
               <div className="space-y-2.5">
                 <div className="text-xs font-bold text-gray-300 uppercase tracking-wider">
-                  Imperial Decrees / Options (陛下決策):
+                  御前決策：
                 </div>
 
                 {currentEvent.choices.map((choice) => {
@@ -275,7 +290,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             {choice.description}
                           </div>
                           <div className="text-[10px] text-amber-300 font-mono font-medium mt-1.5 bg-black/40 px-2 py-0.5 rounded inline-block">
-                            Consequences: {choice.previewEffects}
+                            決策影響：{choice.previewEffects}
                           </div>
                         </div>
                       </div>
@@ -290,12 +305,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 disabled={!selectedChoiceId}
                 className="w-full py-3 bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-700 hover:from-amber-500 hover:to-yellow-400 text-black font-black text-sm tracking-wider rounded-xl shadow-xl transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer hover:scale-[1.01] active:scale-95"
               >
-                ENACT DECREE & ADVANCE TO YEAR {state.year + 1} (頒詔行事) ›
+                頒行國策 · 進入下一年 (第 {state.year + 1} 年) ›
               </button>
             </div>
           ) : (
             <div className="bg-[#151926] border border-gray-800 rounded-xl p-5 text-center text-gray-400 text-xs">
-              Calculating state transitions...
+              天下大局推演中...
             </div>
           )}
 
@@ -303,9 +318,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="bg-[#141824] border border-[#262e42] rounded-xl p-4 flex flex-col gap-2 max-h-72 overflow-hidden">
             <div className="flex items-center justify-between border-b border-gray-800 pb-2">
               <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-1.5">
-                <span>📜</span> World News & Intelligence (天下風雲)
+                <span>📜</span> 天下消息
               </h3>
-              <span className="text-[10px] text-gray-500">Autonomous world events</span>
+              <span className="text-[10px] text-gray-500">列國動態與天下形勢</span>
             </div>
 
             <div className="overflow-y-auto space-y-2 pr-1 text-xs">
@@ -315,7 +330,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   className="p-2 bg-black/30 rounded border border-gray-800/80 flex items-start gap-2"
                 >
                   <span className="text-cyan-400 font-mono text-[10px] whitespace-nowrap mt-0.5">
-                    [Y{item.year}]
+                    [第 {item.year} 年]
                   </span>
                   <span className="text-gray-300 leading-snug">
                     {item.text}
@@ -353,7 +368,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-[#121622] border-2 border-gray-700 rounded-2xl max-w-2xl w-full p-6 shadow-2xl flex flex-col gap-4 text-gray-200 max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-gray-800 pb-2">
-              <h3 className="text-lg font-bold text-white font-serif">Imperial Annals (起居注實錄)</h3>
+              <h3 className="text-lg font-bold text-white font-serif">起居注 · 歷史紀錄</h3>
               <button
                 onClick={() => setShowHistory(false)}
                 className="w-7 h-7 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:text-white"
@@ -366,8 +381,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {state.historyLog.map((h) => (
                 <div key={h.year} className="bg-black/40 border border-gray-800 p-3 rounded-lg text-xs">
                   <div className="flex items-center justify-between font-mono text-amber-300 font-bold mb-1">
-                    <span>Year {h.year} (Age {h.rulerAge})</span>
-                    <span className="text-gray-400 font-normal">Land: {h.territoryCount} · Military: {h.military}k</span>
+                    <span>在位第 {h.year} 年（{h.rulerAge} 歲）</span>
+                    <span className="text-gray-400 font-normal">領土：{h.territoryCount} 城 · 軍力：{h.military} 萬</span>
                   </div>
                   <div className="font-semibold text-white">{h.eventTitle}</div>
                   <div className="text-gray-400 mt-0.5">{h.choiceMade}</div>

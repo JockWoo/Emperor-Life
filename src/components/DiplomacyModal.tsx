@@ -29,10 +29,10 @@ export const DiplomacyModal: React.FC<DiplomacyModalProps> = ({
         <div className="flex items-center justify-between border-b border-gray-800 pb-3">
           <div>
             <span className="text-xs uppercase tracking-widest text-amber-400 font-bold">
-              Grand Hall of Statecraft · 鴻臚寺天下藩服
+              鴻臚寺 · 列國外交
             </span>
             <h2 className="text-2xl font-black text-white font-serif tracking-wider">
-              DIPLOMATIC RELATIONS & ALLIANCES
+              天下邦交與列國盟約
             </h2>
           </div>
           <button
@@ -52,19 +52,19 @@ export const DiplomacyModal: React.FC<DiplomacyModalProps> = ({
             const isAtWar = playerCountry.atWarWith.includes(cid);
 
             let relationColor = 'text-gray-400';
-            let relationBadge = 'Neutral';
+            let relationBadge = '中立';
             if (relation >= 50) {
               relationColor = 'text-emerald-400';
-              relationBadge = 'Friendly / Allied';
+              relationBadge = '親善 / 盟邦';
             } else if (relation >= 15) {
               relationColor = 'text-green-300';
-              relationBadge = 'Amiable';
+              relationBadge = '和睦';
             } else if (relation <= -30) {
               relationColor = 'text-red-500';
-              relationBadge = 'Hostile';
+              relationBadge = '敵對';
             } else if (relation < 0) {
               relationColor = 'text-orange-400';
-              relationBadge = 'Distrustful';
+              relationBadge = '疏遠';
             }
 
             return (
@@ -83,22 +83,22 @@ export const DiplomacyModal: React.FC<DiplomacyModalProps> = ({
                       </span>
                       {!country.isAlive && (
                         <span className="px-2 py-0.5 rounded text-[10px] bg-red-950 text-red-400 border border-red-800">
-                          EXTINGUISHED
+                          國祚已滅
                         </span>
                       )}
                       {isAllied && (
                         <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold">
-                          🤝 ALLY
+                          🤝 盟友
                         </span>
                       )}
                       {isAtWar && (
                         <span className="px-2 py-0.5 rounded text-[10px] bg-red-950 text-red-300 border border-red-700 font-bold">
-                          ⚔️ AT WAR
+                          ⚔️ 交戰中
                         </span>
                       )}
                     </div>
                     <div className="text-xs text-gray-400 mt-0.5">
-                      Capital: {country.capitalName} · Military: <span className="text-red-400 font-mono">{country.military}k</span> · Pop: <span className="text-emerald-400 font-mono">{country.population}M</span>
+                      都城：{country.capitalName} · 軍力：<span className="text-red-400 font-mono">{country.military} 萬</span> · 人口：<span className="text-emerald-400 font-mono">{country.population} 萬</span>
                     </div>
                     <div className="text-[11px] text-gray-500 mt-1 italic">
                       "{country.ruler.personality.description}"
@@ -109,7 +109,7 @@ export const DiplomacyModal: React.FC<DiplomacyModalProps> = ({
                 {/* Right relations & actions */}
                 <div className="flex flex-col md:items-end gap-2">
                   <div className="flex items-center gap-2 text-xs">
-                    <span className="text-gray-400">Disposition:</span>
+                    <span className="text-gray-400">雙方關係：</span>
                     <span className={`font-bold font-mono ${relationColor}`}>
                       {relation > 0 ? `+${relation}` : relation} ({relationBadge})
                     </span>
@@ -120,29 +120,29 @@ export const DiplomacyModal: React.FC<DiplomacyModalProps> = ({
                       <button
                         onClick={() => onSendTribute(cid)}
                         disabled={playerCountry.treasury < 50}
-                        className="px-2.5 py-1 bg-amber-900/60 hover:bg-amber-800 text-amber-200 text-xs rounded border border-amber-600/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                        title="Send 50 Gold as imperial gift to improve relations by +20"
+                        className="px-2.5 py-1 bg-amber-900/60 hover:bg-amber-800 text-amber-200 text-xs rounded border border-amber-600/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+                        title="送出 50 國庫厚禮以改善邦交 (+20 關係)"
                       >
-                        🎁 Send Gold (-50🪙)
+                        🎁 資助 (-50國庫)
                       </button>
 
                       {!isAllied && (
                         <button
                           onClick={() => onProposeAlliance(cid)}
                           disabled={relation < 20}
-                          className="px-2.5 py-1 bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 text-xs rounded border border-emerald-600/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                          title={relation < 20 ? 'Requires relations >= 20' : 'Propose Non-Aggression Alliance'}
+                          className="px-2.5 py-1 bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 text-xs rounded border border-emerald-600/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+                          title={relation < 20 ? '需關係達到 20 以上' : '締結互不侵犯結盟盟約'}
                         >
-                          🤝 Alliance Pact
+                          🤝 結盟
                         </button>
                       )}
 
                       {!isAtWar && (
                         <button
                           onClick={() => onDeclareWar(cid)}
-                          className="px-2.5 py-1 bg-red-900/60 hover:bg-red-800 text-red-200 text-xs rounded border border-red-600/50 transition-all"
+                          className="px-2.5 py-1 bg-red-900/60 hover:bg-red-800 text-red-200 text-xs rounded border border-red-600/50 transition-all cursor-pointer"
                         >
-                          ⚔️ Denounce War
+                          ⚔️ 宣戰
                         </button>
                       )}
                     </div>

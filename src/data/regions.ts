@@ -1,12 +1,12 @@
 import { Region } from '../types/game';
 
-// 35 stylized geographic regions across 7 initial dynasties (5 regions each)
-// Placed on a 1000x700 viewBox canvas
+// 35 個風格化地域板塊，分佈於七大開國勢力（初始每國 5 個地域）
+// 畫布尺寸基於 1000x700 viewBox
 export const INITIAL_REGIONS: Record<string, Region> = {
-  // ================= QIN (Northwest / Guanzhong / West) =================
+  // ================= 秦 (西北 / 關中 / 巴蜀) =================
   qin_xianyang: {
     id: 'qin_xianyang',
-    name: 'Xianyang (Guanzhong)',
+    name: '咸陽 (關中)',
     chineseName: '咸陽 (關中)',
     countryId: 'qin',
     basePop: 4.8,
@@ -21,7 +21,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   qin_longxi: {
     id: 'qin_longxi',
-    name: 'Longxi (Hexi Corridor)',
+    name: '隴西 (河西)',
     chineseName: '隴西 (河西)',
     countryId: 'qin',
     basePop: 2.1,
@@ -35,7 +35,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   qin_hanzhong: {
     id: 'qin_hanzhong',
-    name: 'Hanzhong Valley',
+    name: '漢中盆地',
     chineseName: '漢中盆地',
     countryId: 'qin',
     basePop: 2.5,
@@ -49,7 +49,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   qin_shu: {
     id: 'qin_shu',
-    name: 'Chengdu (Shu Basin)',
+    name: '蜀中 (天府)',
     chineseName: '蜀中 (天府)',
     countryId: 'qin',
     basePop: 4.2,
@@ -63,7 +63,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   qin_ba: {
     id: 'qin_ba',
-    name: 'Eastern Ba (Three Gorges)',
+    name: '巴東三峽',
     chineseName: '巴東三峽',
     countryId: 'qin',
     basePop: 2.8,
@@ -76,11 +76,11 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     neighbors: ['qin_shu', 'qin_hanzhong', 'han_nanyang', 'ming_jingnan']
   },
 
-  // ================= HAN (Central-West / Han River) =================
+  // ================= 漢 (中西 / 漢水 / 中原交界) =================
   han_sanqin: {
     id: 'han_sanqin',
-    name: "Chang'an (Sanqin)",
-    chineseName: "長安 (三秦)",
+    name: '長安 (三秦)',
+    chineseName: '長安 (三秦)',
     countryId: 'han',
     basePop: 4.5,
     baseWealth: 45,
@@ -94,7 +94,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   han_nanyang: {
     id: 'han_nanyang',
-    name: 'Nanyang Basin',
+    name: '南陽盆地',
     chineseName: '南陽盆地',
     countryId: 'han',
     basePop: 3.8,
@@ -108,7 +108,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   han_runan: {
     id: 'han_runan',
-    name: 'Runan Plains',
+    name: '汝南沃野',
     chineseName: '汝南沃野',
     countryId: 'han',
     basePop: 3.5,
@@ -122,7 +122,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   han_sishui: {
     id: 'han_sishui',
-    name: 'Sishui Commandery',
+    name: '泗水沛縣',
     chineseName: '泗水沛縣',
     countryId: 'han',
     basePop: 3.2,
@@ -136,7 +136,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   han_chuhan: {
     id: 'han_chuhan',
-    name: 'Pengcheng Border',
+    name: '彭城要衝',
     chineseName: '彭城要衝',
     countryId: 'han',
     basePop: 2.9,
@@ -149,10 +149,10 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     neighbors: ['han_sishui', 'ming_yingtian', 'ming_huizhou', 'han_runan']
   },
 
-  // ================= SUI (Hedong / Central North / Luoyang) =================
+  // ================= 隋 (河東 / 中原西北 / 大興) =================
   sui_daxing: {
     id: 'sui_daxing',
-    name: 'Daxing City',
+    name: '大興帝都',
     chineseName: '大興帝都',
     countryId: 'sui',
     basePop: 4.6,
@@ -167,7 +167,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   sui_hedong: {
     id: 'sui_hedong',
-    name: 'Hedong Saltlands',
+    name: '河東鹽池',
     chineseName: '河東鹽池',
     countryId: 'sui',
     basePop: 3.4,
@@ -181,7 +181,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   sui_hongnong: {
     id: 'sui_hongnong',
-    name: 'Hongnong Pass',
+    name: '弘農函谷',
     chineseName: '弘農函谷',
     countryId: 'sui',
     basePop: 2.6,
@@ -195,7 +195,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   sui_taiyuan: {
     id: 'sui_taiyuan',
-    name: 'Fen River Valley',
+    name: '汾水盆地',
     chineseName: '汾水盆地',
     countryId: 'sui',
     basePop: 3.1,
@@ -209,7 +209,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   sui_shangdang: {
     id: 'sui_shangdang',
-    name: 'Shangdang Highlands',
+    name: '上黨高地',
     chineseName: '上黨高地',
     countryId: 'sui',
     basePop: 2.4,
@@ -222,10 +222,10 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     neighbors: ['sui_taiyuan', 'tang_youzhou', 'song_bianjing', 'sui_daxing']
   },
 
-  // ================= TANG (North / Shanxi / Steppe frontier) =================
+  // ================= 唐 (北方邊關 / 山西塞上) =================
   tang_jinyang: {
     id: 'tang_jinyang',
-    name: 'Jinyang Fortress',
+    name: '晉陽龍興',
     chineseName: '晉陽龍興',
     countryId: 'tang',
     basePop: 4.0,
@@ -240,7 +240,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   tang_shuofang: {
     id: 'tang_shuofang',
-    name: 'Shuofang Ordos',
+    name: '朔方河套',
     chineseName: '朔方河套',
     countryId: 'tang',
     basePop: 2.2,
@@ -254,7 +254,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   tang_yanmen: {
     id: 'tang_yanmen',
-    name: 'Yanmen Pass',
+    name: '雁門雄關',
     chineseName: '雁門雄關',
     countryId: 'tang',
     basePop: 2.0,
@@ -268,7 +268,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   tang_yunzhong: {
     id: 'tang_yunzhong',
-    name: 'Yunzhong Frontier',
+    name: '雲中塞北',
     chineseName: '雲中塞北',
     countryId: 'tang',
     basePop: 1.8,
@@ -282,7 +282,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   tang_youzhou: {
     id: 'tang_youzhou',
-    name: 'Youzhou (Yanshan)',
+    name: '幽州燕山',
     chineseName: '幽州燕山',
     countryId: 'tang',
     basePop: 3.5,
@@ -295,10 +295,10 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     neighbors: ['tang_yanmen', 'qing_ningyuan', 'sui_shangdang', 'song_bianjing']
   },
 
-  // ================= SONG (Central Plains / Bian River) =================
+  // ================= 宋 (中原腹地 / 汴河) =================
   song_bianjing: {
     id: 'song_bianjing',
-    name: 'Bianjing (Kaifeng)',
+    name: '汴京 (開封)',
     chineseName: '汴京 (開封)',
     countryId: 'song',
     basePop: 5.2,
@@ -313,7 +313,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   song_luoyang: {
     id: 'song_luoyang',
-    name: 'Eastern Capital Luoyang',
+    name: '東都洛陽',
     chineseName: '東都洛陽',
     countryId: 'song',
     basePop: 4.4,
@@ -327,7 +327,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   song_yingchuan: {
     id: 'song_yingchuan',
-    name: 'Yingchuan Commandery',
+    name: '潁川名郡',
     chineseName: '潁川名郡',
     countryId: 'song',
     basePop: 3.6,
@@ -341,7 +341,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   song_guide: {
     id: 'song_guide',
-    name: 'Guide Prefecture',
+    name: '歸德名藩',
     chineseName: '歸德名藩',
     countryId: 'song',
     basePop: 3.4,
@@ -355,7 +355,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   song_huaiyang: {
     id: 'song_huaiyang',
-    name: 'Huaiyang Granaries',
+    name: '淮陽重鎮',
     chineseName: '淮陽重鎮',
     countryId: 'song',
     basePop: 3.8,
@@ -368,10 +368,10 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     neighbors: ['song_bianjing', 'song_yingchuan', 'song_guide', 'han_sishui']
   },
 
-  // ================= MING (Southeast / Jiangnan / Yangtze) =================
+  // ================= 明 (東南 / 江南水鄉 / 長江) =================
   ming_yingtian: {
     id: 'ming_yingtian',
-    name: 'Yingtian (Nanjing)',
+    name: '應天府 (南京)',
     chineseName: '應天府 (南京)',
     countryId: 'ming',
     basePop: 5.4,
@@ -386,7 +386,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   ming_liangzhe: {
     id: 'ming_liangzhe',
-    name: 'Liangzhe (Hangzhou)',
+    name: '兩浙 (杭州)',
     chineseName: '兩浙 (杭州)',
     countryId: 'ming',
     basePop: 5.0,
@@ -400,7 +400,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   ming_huizhou: {
     id: 'ming_huizhou',
-    name: 'Huizhou & Xin’an',
+    name: '徽州新安',
     chineseName: '徽州新安',
     countryId: 'ming',
     basePop: 3.6,
@@ -414,7 +414,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   ming_jiangxi: {
     id: 'ming_jiangxi',
-    name: 'Jiangxi Poyang Lake',
+    name: '江西鄱陽',
     chineseName: '江西鄱陽',
     countryId: 'ming',
     basePop: 4.1,
@@ -428,7 +428,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   ming_jingnan: {
     id: 'ming_jingnan',
-    name: 'Jingnan (Huguang)',
+    name: '荊南湖廣',
     chineseName: '荊南湖廣',
     countryId: 'ming',
     basePop: 4.3,
@@ -441,10 +441,10 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     neighbors: ['ming_jiangxi', 'qin_ba', 'han_nanyang']
   },
 
-  // ================= QING (Northeast / Manchuria & Liaodong) =================
+  // ================= 清 (東北 / 遼東 / 白山黑水) =================
   qing_shengjing: {
     id: 'qing_shengjing',
-    name: 'Shengjing (Mukden)',
+    name: '盛京 (瀋陽)',
     chineseName: '盛京 (瀋陽)',
     countryId: 'qing',
     basePop: 3.8,
@@ -459,7 +459,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   qing_liaodong: {
     id: 'qing_liaodong',
-    name: 'Liaodong Peninsula',
+    name: '遼東半島',
     chineseName: '遼東半島',
     countryId: 'qing',
     basePop: 3.5,
@@ -473,7 +473,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   qing_ningyuan: {
     id: 'qing_ningyuan',
-    name: 'Shanhaiguan & Ningyuan',
+    name: '山海關寧遠',
     chineseName: '山海關寧遠',
     countryId: 'qing',
     basePop: 2.8,
@@ -487,7 +487,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   qing_jilin: {
     id: 'qing_jilin',
-    name: 'Jilin Forest Steppe',
+    name: '吉林松花江',
     chineseName: '吉林松花江',
     countryId: 'qing',
     basePop: 2.2,
@@ -501,7 +501,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
   },
   qing_heilongjiang: {
     id: 'qing_heilongjiang',
-    name: 'Heilongjiang Frontier',
+    name: '黑龍江塞外',
     chineseName: '黑龍江塞外',
     countryId: 'qing',
     basePop: 1.6,

@@ -4,7 +4,7 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
   qin: [
     {
       id: 'qin_wangjian',
-      name: 'Wang Jian',
+      name: '王翦',
       chineseName: '王翦',
       countryId: 'qin',
       role: 'general',
@@ -17,11 +17,11 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 76,
       isAlive: true,
       status: 'active',
-      specialty: 'Master of massive army campaigns and fortress sieges.'
+      specialty: '善統大軍，長於堅壁清野與攻堅拔寨，沉穩老練。'
     },
     {
       id: 'qin_mengtian',
-      name: 'Meng Tian',
+      name: '蒙恬',
       chineseName: '蒙恬',
       countryId: 'qin',
       role: 'general',
@@ -34,11 +34,11 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 68,
       isAlive: true,
       status: 'active',
-      specialty: 'Cavalry tactician and Great Wall fortification architect.'
+      specialty: '長於塞北騎射與要塞防禦，北卻匈奴七百里。'
     },
     {
       id: 'qin_lisi',
-      name: 'Li Si',
+      name: '李斯',
       chineseName: '李斯',
       countryId: 'qin',
       role: 'minister',
@@ -51,13 +51,13 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 72,
       isAlive: true,
       status: 'active',
-      specialty: 'Legalist statecraft, standardizing script, laws, and currency.'
+      specialty: '精通法家典章，創設郡縣制度，統一度量衡與書軌。'
     }
   ],
   han: [
     {
       id: 'han_hanxin',
-      name: 'Han Xin',
+      name: '韓信',
       chineseName: '韓信',
       countryId: 'han',
       role: 'general',
@@ -70,11 +70,11 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 65,
       isAlive: true,
       status: 'active',
-      specialty: 'God of War — ambushes, crossing waters, turning despair to triumph.'
+      specialty: '兵仙神帥，善用奇謀埋伏、背水列陣，多多益善。'
     },
     {
       id: 'han_zhangliang',
-      name: 'Zhang Liang',
+      name: '張良',
       chineseName: '張良',
       countryId: 'han',
       role: 'strategist',
@@ -87,11 +87,11 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 75,
       isAlive: true,
       status: 'active',
-      specialty: 'Grand strategist discerning political tides from a thousand miles.'
+      specialty: '運籌帷幄之中，決勝千里之外，善洞察天下大勢。'
     },
     {
       id: 'han_xiaohe',
-      name: 'Xiao He',
+      name: '蕭何',
       chineseName: '蕭何',
       countryId: 'han',
       role: 'minister',
@@ -104,13 +104,13 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 74,
       isAlive: true,
       status: 'active',
-      specialty: 'Flawless domestic logistics, tax administration, and recruitment.'
+      specialty: '鎮撫後方，收賦轉餉源源不絕，制定九章律令。'
     }
   ],
   sui: [
     {
       id: 'sui_yangsu',
-      name: 'Yang Su',
+      name: '楊素',
       chineseName: '楊素',
       countryId: 'sui',
       role: 'general',
@@ -123,11 +123,11 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 68,
       isAlive: true,
       status: 'active',
-      specialty: 'Riverine naval combat and decisive crushing offensive doctrine.'
+      specialty: '善造巨艦水陸並進，攻堅克敵勇決，令敵軍喪膽。'
     },
     {
       id: 'sui_gaojiong',
-      name: 'Gao Jiong',
+      name: '高熲',
       chineseName: '高熲',
       countryId: 'sui',
       role: 'minister',
@@ -140,11 +140,11 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 73,
       isAlive: true,
       status: 'active',
-      specialty: 'Civil examinations, three departments & six ministries design.'
+      specialty: '綜理朝政綱紀，草創三省六部與均田輸籍之法。'
     },
     {
       id: 'sui_heruobi',
-      name: 'He Ruobi',
+      name: '賀若弼',
       chineseName: '賀若弼',
       countryId: 'sui',
       role: 'general',
@@ -157,13 +157,13 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 66,
       isAlive: true,
       status: 'active',
-      specialty: 'Rapid Yangtze crossings and psychological shock warfare.'
+      specialty: '奇襲渡江如疾風迅雷，長於野戰摧鋒與攻心之策。'
     }
   ],
   tang: [
     {
       id: 'tang_lijing',
-      name: 'Li Jing',
+      name: '李靖',
       chineseName: '李靖',
       countryId: 'tang',
       role: 'general',
@@ -176,11 +176,11 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 78,
       isAlive: true,
       status: 'active',
-      specialty: 'God-tier tactical theorist who annihilated northern nomadic hosts.'
+      specialty: '一代軍神兵法大家，長於千里奔襲與分進合擊陣法。'
     },
     {
       id: 'tang_qinshubao',
-      name: 'Qin Shubao',
+      name: '秦叔寶',
       chineseName: '秦叔寶',
       countryId: 'tang',
       role: 'general',
@@ -193,11 +193,11 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 68,
       isAlive: true,
       status: 'active',
-      specialty: 'Fierce shock cavalry charges capable of taking enemy generals.'
+      specialty: '勇冠三軍，每戰必為前鋒摧折敵陣，萬軍中取將首級。'
     },
     {
       id: 'tang_fangxuanling',
-      name: 'Fang Xuanling',
+      name: '房玄齡',
       chineseName: '房玄齡',
       countryId: 'tang',
       role: 'minister',
@@ -210,13 +210,13 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 75,
       isAlive: true,
       status: 'active',
-      specialty: 'Prudent cabinet administration, law codes, and talent screening.'
+      specialty: '善謀略籌劃，綜理樞機要政，廣羅人才夙夜在公。'
     }
   ],
   song: [
     {
       id: 'song_caobin',
-      name: 'Cao Bin',
+      name: '曹彬',
       chineseName: '曹彬',
       countryId: 'song',
       role: 'general',
@@ -229,11 +229,11 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 72,
       isAlive: true,
       status: 'active',
-      specialty: 'Disciplined, bloodless city surrender policies and siege patience.'
+      specialty: '治軍嚴明，入城秋毫無犯，崇尚德化仁將典範。'
     },
     {
       id: 'song_panmei',
-      name: 'Pan Mei',
+      name: '潘美',
       chineseName: '潘美',
       countryId: 'song',
       role: 'general',
@@ -246,11 +246,11 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 69,
       isAlive: true,
       status: 'active',
-      specialty: 'Coordinated amphibious crossings and southern expedition marches.'
+      specialty: '驍勇善謀，長於水陸會同作戰與深入遠征拔寨。'
     },
     {
       id: 'song_zhaopu',
-      name: 'Zhao Pu',
+      name: '趙普',
       chineseName: '趙普',
       countryId: 'song',
       role: 'minister',
@@ -263,13 +263,13 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 74,
       isAlive: true,
       status: 'active',
-      specialty: 'Pacifying warlords with diplomatic acumen and structural bureaucracy.'
+      specialty: '半部論語定天下，深諳權術防弊與官制樞要調整。'
     }
   ],
   ming: [
     {
       id: 'ming_xuda',
-      name: 'Xu Da',
+      name: '徐達',
       chineseName: '徐達',
       countryId: 'ming',
       role: 'general',
@@ -282,11 +282,11 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 68,
       isAlive: true,
       status: 'active',
-      specialty: 'Supreme northern expedition strategist, taking capitals with zero plunder.'
+      specialty: '智勇兼備萬里長征，大軍北伐收復幽雲，秋毫無犯。'
     },
     {
       id: 'ming_changyuchun',
-      name: 'Chang Yuchun',
+      name: '常遇春',
       chineseName: '常遇春',
       countryId: 'ming',
       role: 'general',
@@ -299,11 +299,11 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 62,
       isAlive: true,
       status: 'active',
-      specialty: 'Fierce invincible shock attacker claiming victory with 100k vanguard.'
+      specialty: '常十萬橫行天下，每戰必為突擊先鋒，摧鋒陷陣無敵。'
     },
     {
       id: 'ming_lishanchang',
-      name: 'Li Shanchang',
+      name: '李善長',
       chineseName: '李善長',
       countryId: 'ming',
       role: 'minister',
@@ -316,13 +316,13 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 74,
       isAlive: true,
       status: 'active',
-      specialty: 'Grand logistics organizer and compiler of Great Ming legal code.'
+      specialty: '總理後勤軍餉，精通律令典章，草創大明制度綱紀。'
     }
   ],
   qing: [
     {
       id: 'qing_dorgon',
-      name: 'Dorgon',
+      name: '多爾袞',
       chineseName: '多爾袞',
       countryId: 'qing',
       role: 'general',
@@ -335,11 +335,11 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 64,
       isAlive: true,
       status: 'active',
-      specialty: 'Master of swift mountain pass breakthrough and diplomatic conquest.'
+      specialty: '智謀沉毅，長於山海關突破、收撫降將與入關統籌。'
     },
     {
       id: 'qing_dodo',
-      name: 'Dodo',
+      name: '多鐸',
       chineseName: '多鐸',
       countryId: 'qing',
       role: 'general',
@@ -352,11 +352,11 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 60,
       isAlive: true,
       status: 'active',
-      specialty: 'Ferocious banner cavalry raids and deep inland river spearheads.'
+      specialty: '八旗驍將迅猛絕倫，千里奔襲突破中原江防重鎮。'
     },
     {
       id: 'qing_fanwencheng',
-      name: 'Fan Wencheng',
+      name: '范文程',
       chineseName: '范文程',
       countryId: 'qing',
       role: 'minister',
@@ -369,7 +369,7 @@ export const INITIAL_CHARACTERS: Record<CountryId, Character[]> = {
       maxAge: 76,
       isAlive: true,
       status: 'active',
-      specialty: 'Bridging Han scholar-bureaucrats with Manchu court leadership.'
+      specialty: '定策安邦的重要謀臣，溝通滿漢臣民，重開科舉。'
     }
   ]
 };

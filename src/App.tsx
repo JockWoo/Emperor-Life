@@ -87,7 +87,7 @@ export const App: React.FC = () => {
           {
             id: `recruit_${Date.now()}`,
             year: prev.year,
-            text: `${playerCountry.name} issued an imperial mobilization order, drafting 20,000 new bannermen into the army.`,
+            text: `【${playerCountry.name}】頒布招募軍隊令，廣募天下壯丁兩萬人入伍！`,
             type: 'recruitment',
             importance: 'high'
           },
@@ -119,7 +119,7 @@ export const App: React.FC = () => {
           {
             id: `agri_${Date.now()}`,
             year: prev.year,
-            text: `${playerCountry.name} invested treasury funds to dredge irrigation waterways and construct national granaries.`,
+            text: `【${playerCountry.name}】推行發展農業，撥發國庫修浚水利、廣開糧倉！`,
             type: 'internal',
             importance: 'normal'
           },
@@ -162,7 +162,7 @@ export const App: React.FC = () => {
           {
             id: `tribute_${Date.now()}`,
             year: prev.year,
-            text: `${playerCountry.name} dispatched envoys with gold and fine silk to ${targetCountry.name}, warming diplomatic ties.`,
+            text: `【${playerCountry.name}】派遣使臣資助【${targetCountry.name}】，列國邦交大為改善。`,
             type: 'diplomacy',
             importance: 'normal'
           },
@@ -200,7 +200,7 @@ export const App: React.FC = () => {
           {
             id: `alliance_${Date.now()}`,
             year: prev.year,
-            text: `${playerCountry.name} and ${targetCountry.name} swore a sacred alliance under heaven to uphold peace!`,
+            text: `【${playerCountry.name}】與【${targetCountry.name}】告天結盟，約定互為盟友，共保太平！`,
             type: 'diplomacy',
             importance: 'high'
           },
@@ -241,7 +241,7 @@ export const App: React.FC = () => {
           {
             id: `war_decl_${Date.now()}`,
             year: prev.year,
-            text: `WAR! ${playerCountry.name} has denounced ${targetCountry.name} and mobilized armies for conquest!`,
+            text: `烽煙四起！【${playerCountry.name}】對【${targetCountry.name}】正式宣戰，戰火席捲天下！`,
             type: 'war',
             importance: 'critical'
           },
@@ -283,25 +283,25 @@ export const App: React.FC = () => {
               className="text-base font-black text-amber-200 tracking-wider font-serif cursor-pointer hover:text-white transition-colors"
               onClick={() => setCurrentScreen('selection')}
             >
-              七帝爭霸 · EMPEROR LIFE
+              👑 七帝爭霸
             </h1>
             <div className="text-[10px] text-gray-400">
-              Shared World Historical Emperor Life Simulator
+              歷史帝王人生模擬器 · 同世爭霸
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-3 text-xs">
           <div className="hidden sm:flex items-center gap-1.5 bg-black/50 px-2.5 py-1 rounded border border-gray-800 text-gray-400 font-mono">
-            <span>Seed:</span>
+            <span>種子：</span>
             <span className="text-amber-300 font-bold">{seed}</span>
           </div>
           {currentScreen === 'game' && (
             <button
               onClick={() => setCurrentScreen('selection')}
-              className="px-3 py-1 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded border border-gray-700 text-xs transition-colors"
+              className="px-3 py-1 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded border border-gray-700 text-xs transition-colors cursor-pointer"
             >
-              Change Ruler
+              更換君主
             </button>
           )}
         </div>
@@ -355,7 +355,7 @@ export const App: React.FC = () => {
 
       {/* Footer */}
       <footer className="border-t border-[#1a202e] py-3 text-center text-xs text-gray-500 bg-[#0b0e16]">
-        七帝爭霸 · Emperor Life Simulator — A shared world simulation of Qin, Han, Sui, Tang, Song, Ming, and Qing.
+        👑 七帝爭霸 · 歷史帝王人生模擬器 — 秦、漢、隋、唐、宋、明、清七朝同世推演
       </footer>
     </div>
   );
