@@ -6,8 +6,11 @@ interface MapProps {
   countries: Record<CountryId, Country>;
   playerCountryId?: CountryId;
   selectedRegionId?: string | null;
+  pendingDefenseRegionIds?: string[];
+  campaignsLeft?: number;
   onSelectRegion?: (regionId: string) => void;
   onAttackRegion?: (regionId: string) => void;
+  onDefendRegion?: (regionId: string) => void;
   interactive?: boolean;
 }
 
@@ -25,8 +28,11 @@ export const Map: React.FC<MapProps> = ({
   countries,
   playerCountryId,
   selectedRegionId,
+  pendingDefenseRegionIds = [],
+  campaignsLeft = 2,
   onSelectRegion,
   onAttackRegion,
+  onDefendRegion,
   interactive = true
 }) => {
   const [hoveredRegionId, setHoveredRegionId] = useState<string | null>(null);
@@ -154,6 +160,7 @@ export const Map: React.FC<MapProps> = ({
             const isSelected = selectedRegionId === region.id;
             const isPlayerTerritory = playerCountryId === region.countryId;
             const isAttackable = adjacentTargetIds.has(region.id);
+            const isUnderAttack = pendingDefenseRegionIds.includes(region.id);
 
             let strokeColor = '#242b3d';
             let strokeWidth = 1.8;
@@ -161,6 +168,9 @@ export const Map: React.FC<MapProps> = ({
             if (isSelected) {
               strokeColor = '#facc15';
               strokeWidth = 3.5;
+            } else if (isUnderAttack) {
+              strokeColor = '#ea580c';
+              strokeWidth = 3.2;
             } else if (isHovered) {
               strokeColor = '#ffffff';
               strokeWidth = 2.5;
@@ -191,12 +201,12 @@ export const Map: React.FC<MapProps> = ({
                   strokeLinejoin="round"
                   style={{
                     transition: 'fill 0.4s ease, stroke 0.2s ease',
-                    filter: isHovered || isSelected ? 'url(#activeGlow)' : 'none'
+                    filter: isHovered || isSelected || isUnderAttack ? 'url(#activeGlow)' : 'none'
                   }}
                 />
 
                 {/* Attackable pulse animation border if adjacent enemy */}
-                {isAttackable && (
+                {isAttackable && !isUnderAttack && (
                   <path
                     d={region.path}
                     fill="none"
@@ -204,6 +214,18 @@ export const Map: React.FC<MapProps> = ({
                     strokeWidth="1.5"
                     strokeDasharray="6 4"
                     className="animate-pulse opacity-75"
+                  />
+                )}
+
+                {/* Under attack emergency pulse */}
+                {isUnderAttack && (
+                  <path
+                    d={region.path}
+                    fill="none"
+                    stroke="#f97316"
+                    strokeWidth="2.5"
+                    strokeDasharray="4 4"
+                    className="animate-ping opacity-60"
                   />
                 )}
 
@@ -253,7 +275,7 @@ export const Map: React.FC<MapProps> = ({
                 </text>
 
                 {/* Swords marker for attackable border targets */}
-                {isAttackable && (
+                {isAttackable && !isUnderAttack && (
                   <text
                     x={region.centerX + 26}
                     y={region.centerY - 10}
@@ -262,6 +284,19 @@ export const Map: React.FC<MapProps> = ({
                     className="pointer-events-none animate-bounce"
                   >
                     ⚔️
+                  </text>
+                )}
+
+                {/* Warning marker for under-attack border targets */}
+                {isUnderAttack && (
+                  <text
+                    x={region.centerX + 26}
+                    y={region.centerY - 10}
+                    textAnchor="middle"
+                    fontSize="14"
+                    className="pointer-events-none animate-bounce"
+                  >
+                    🔥
                   </text>
                 )}
               </g>
@@ -299,9 +334,15 @@ export const Map: React.FC<MapProps> = ({
               <div>倉廩：<span className="text-lime-300 font-medium">{hoveredRegion.baseFood} 🌾</span></div>
             </div>
 
-            {adjacentTargetIds.has(hoveredRegion.id) && (
+            {pendingDefenseRegionIds.includes(hoveredRegion.id) && (
+              <div className="mt-2 pt-1.5 border-t border-gray-700/60 text-orange-400 font-bold flex items-center gap-1 text-[11px] animate-pulse">
+                <span>🚨 邊關告急！敵軍進犯中，請速派兵禦敵！</span>
+              </div>
+            )}
+
+            {adjacentTargetIds.has(hoveredRegion.id) && !pendingDefenseRegionIds.includes(hoveredRegion.id) && (
               <div className="mt-2 pt-1.5 border-t border-gray-700/60 text-red-400 font-bold flex items-center gap-1 text-[11px]">
-                <span>⚔️ 接壤邊境：可發動戰役！</span>
+                <span>⚔️ 接壤邊境：可發動戰役（剩餘征伐令: {campaignsLeft}）</span>
               </div>
             )}
           </div>
@@ -325,6 +366,11 @@ export const Map: React.FC<MapProps> = ({
                 >
                   所屬勢力：{countries[regions[selectedRegionId].countryId].name}
                 </span>
+                {pendingDefenseRegionIds.includes(selectedRegionId) && (
+                  <span className="px-2 py-0.5 rounded text-[10px] bg-red-950 text-orange-400 border border-red-700 font-bold animate-pulse">
+                    🔥 邊關告急
+                  </span>
+                )}
               </div>
               <div className="text-gray-400 text-[11px]">
                 地形：{TERRAIN_NAMES[regions[selectedRegionId].terrain] || regions[selectedRegionId].terrain} · 產出：{regions[selectedRegionId].baseWealth} 賦稅，{regions[selectedRegionId].baseFood} 糧草
@@ -334,18 +380,30 @@ export const Map: React.FC<MapProps> = ({
 
           {/* Action buttons */}
           <div className="flex items-center gap-2">
-            {adjacentTargetIds.has(selectedRegionId) && onAttackRegion && (
+            {pendingDefenseRegionIds.includes(selectedRegionId) && onDefendRegion && (
               <button
-                onClick={() => onAttackRegion(selectedRegionId)}
-                className="px-4 py-1.5 bg-red-700 hover:bg-red-600 text-white font-bold rounded shadow-lg transition-all flex items-center gap-1.5 border border-red-500 hover:scale-105 active:scale-95"
+                onClick={() => onDefendRegion(selectedRegionId)}
+                className="px-4 py-1.5 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold rounded shadow-lg transition-all flex items-center gap-1.5 border border-orange-400 hover:scale-105 active:scale-95 cursor-pointer animate-pulse"
               >
-                <span>⚔️</span>
-                <span>發動戰役</span>
+                <span>🛡️</span>
+                <span>出城迎敵</span>
               </button>
             )}
+
+            {adjacentTargetIds.has(selectedRegionId) && !pendingDefenseRegionIds.includes(selectedRegionId) && onAttackRegion && (
+              <button
+                onClick={() => onAttackRegion(selectedRegionId)}
+                disabled={campaignsLeft <= 0}
+                className="px-4 py-1.5 bg-red-700 hover:bg-red-600 text-white font-bold rounded shadow-lg transition-all flex items-center gap-1.5 border border-red-500 hover:scale-105 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+              >
+                <span>⚔️</span>
+                <span>發動戰役 {campaignsLeft <= 0 ? '(令符用盡)' : `(${campaignsLeft}/2)`}</span>
+              </button>
+            )}
+
             <button
               onClick={() => onSelectRegion && onSelectRegion('')}
-              className="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded"
+              className="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded cursor-pointer"
             >
               關閉
             </button>

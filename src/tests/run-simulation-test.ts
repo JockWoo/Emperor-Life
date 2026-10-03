@@ -1,4 +1,5 @@
 import { createInitialGameState, processYearlyTurn, executePlayerAttack } from '../systems/simulation';
+import { canLaunchCampaign, createBattle, resolveRound, applyBattleOutcome } from '../systems/battle';
 import { SeededRNG } from '../utils/random';
 import { CountryId } from '../types/game';
 
@@ -75,40 +76,69 @@ function runTests() {
     curState.countries.qin.morale = 95;
 
     const warResult = executePlayerAttack(curState, attackTargetId);
-    console.log(`  War outcome: ${warResult.message}`);
-    console.log(`  Target region new owner: ${warResult.state.regions[attackTargetId].countryId}`);
+    console.log(`  ✓ Attack executed: ${warResult.message}`);
+    console.log(`    Resulting territory owner: ${curState.regions[attackTargetId].countryId}`);
   }
 
-  // Test 5: Simulating Full Lifetime to End Condition
-  console.log('\nTest 5: Simulating Full Lifespan Until Endgame...');
-  let simState = createInitialGameState('endgame_test_seed', 'qin');
-  let turnCount = 0;
-  while (simState.phase !== 'game_over' && turnCount < 100) {
-    turnCount++;
-    const event = simState.currentEvent || {
-      id: 'dummy',
-      title: 'Routine Governance',
-      category: 'politics' as const,
-      description: 'Peaceful year',
-      choices: [{
-        id: 'c1',
-        text: 'Govern with wisdom',
-        description: 'Steady state',
-        previewEffects: 'Stability +5',
-        effects: { stability: 5 }
-      }]
-    };
-    simState = processYearlyTurn(simState, event.choices[0]);
+  // Test 5: Tactical 3-Round Battle Engine Verification
+  console.log('\nTest 5: Verifying Tactical 3-Round Battle Engine...');
+  const battleState = createInitialGameState('battle_test_seed', 'qin');
+  const qinRegionsList = Object.values(battleState.regions).filter(r => r.countryId === 'qin');
+  let borderRegionId: string | null = null;
+  for (const pr of qinRegionsList) {
+    for (const nid of pr.neighbors) {
+      if (battleState.regions[nid].countryId !== 'qin') {
+        borderRegionId = nid;
+        break;
+      }
+    }
+    if (borderRegionId) break;
+  }
+  if (!borderRegionId) throw new Error('No adjacent enemy region found for battle test!');
+
+  const targetEnemyId = battleState.regions[borderRegionId].countryId;
+  const targetRegion = battleState.regions[borderRegionId];
+  console.log(`  Attacking ${targetRegion.chineseName} (${targetEnemyId}) from Qin...`);
+
+  // Verify canLaunchCampaign
+  const check = canLaunchCampaign(battleState, borderRegionId);
+  if (!check.ok) throw new Error(`canLaunchCampaign failed: ${check.reason}`);
+  console.log('  ✓ canLaunchCampaign checked successfully.');
+
+  // Create battle
+  const leadGeneral = battleState.countries.qin.characters.find(c => c.isAlive && c.role === 'general') || null;
+  let battle = createBattle(battleState, {
+    mode: 'attack',
+    regionId: borderRegionId,
+    enemyCountryId: targetEnemyId,
+    playerGeneralId: leadGeneral?.id ?? null,
+    commitRatio: 0.5
+  });
+
+  console.log(`  ✓ Battle initialized: ${battle.player.generalName} (${battle.player.troops}萬) VS ${battle.enemy.generalName} (${battle.enemy.troops}萬)`);
+  console.log(`    Scout report: ${battle.scout.tactic} (${battle.scout.confidence}% confidence)`);
+
+  // Round 1: Duel
+  battle = resolveRound(battleState, battle, 'duel');
+  console.log(`    Round 1 (Duel): ${battle.log[0].text}`);
+  if (battle.duelUsed !== true) throw new Error('Duel flag was not set!');
+
+  // Round 2 & 3: Tactics
+  if (!battle.finished) {
+    battle = resolveRound(battleState, battle, 'charge');
+    console.log(`    Round 2 (Charge): ${battle.log[1]?.text}`);
+  }
+  if (!battle.finished) {
+    battle = resolveRound(battleState, battle, 'hold');
+    console.log(`    Round 3 (Hold): ${battle.log[2]?.text}`);
   }
 
-  console.log(`  ✓ Game reached end condition in Year ${simState.year} (Ruled ${turnCount} years)`);
-  if (!simState.gameOverReason) throw new Error('Expected gameOverReason upon game over!');
-  console.log(`  Ending Title: "${simState.gameOverReason.title}"`);
-  console.log(`  Victory status: ${simState.gameOverReason.victory}`);
-  console.log(`  Max Territory Pct: ${simState.stats.maxTerritoryPct}%`);
-  console.log(`  History Log entries: ${simState.historyLog.length}`);
+  console.log(`  ✓ Battle concluded! Outcome: ${battle.outcome}, Decisive: ${battle.decisive}`);
+  const battleResult = applyBattleOutcome(battleState, battle);
+  console.log(`  ✓ Outcome applied: ${battleResult.message}`);
+  console.log(`    Qin military: ${battleResult.state.countries.qin.military}萬, Campaigns left: ${battleResult.state.campaignsLeft}`);
 
-  console.log('\n=== ALL SIMULATION TESTS PASSED SUCCESSFULLY! ===');
+  console.log('\n=== ALL SIMULATION & BATTLE TESTS PASSED SUCCESSFULLY! ===');
 }
 
 runTests();

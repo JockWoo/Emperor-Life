@@ -17,6 +17,8 @@ import { GAME_EVENTS } from '../data/events';
 import { INITIAL_RULERS } from '../data/rulers';
 import { INITIAL_CHARACTERS } from '../data/characters';
 import { INITIAL_REGIONS } from '../data/regions';
+import { CAMPAIGNS_PER_YEAR, autoResolveDefense } from './battle';
+import { PendingDefense } from '../types/game';
 
 // 初始化全新遊戲狀態
 export function createInitialGameState(seed?: string, chosenRulerId: CountryId = 'qin'): GameState {
@@ -132,14 +134,16 @@ export function createInitialGameState(seed?: string, chosenRulerId: CountryId =
       ]
     },
     phase: 'turn_event',
-    gameOverReason: null
+    gameOverReason: null,
+    campaignsLeft: CAMPAIGNS_PER_YEAR,
+    pendingDefenses: []
   };
 }
 
 // 抽取該年度事件
 export function pickEventForYear(country: Country, year: number, rng: SeededRNG, usedEventIds: string[]): GameEvent {
   const eligible = GAME_EVENTS.filter(e => {
-    if (usedEventIds.includes(e.id) && usedEventIds.length < GAME_EVENTS.length) {
+    if (usedEventIds.includes(e.id) || usedEventIds.includes(e.title)) {
       return false;
     }
     if (e.condition && !e.condition(country, year)) {
@@ -207,9 +211,17 @@ export function applyEventEffects(country: Country, effects: EventEffect): strin
 
 // 推進一整年的世界推演運算
 export function processYearlyTurn(
-  prevState: GameState,
+  rawPrevState: GameState,
   playerChoice: EventChoice
 ): GameState {
+  // 0. 尚未親自迎戰的入侵，由守將自動結算
+  let prevState = rawPrevState;
+  for (const pd of [...(rawPrevState.pendingDefenses ?? [])]) {
+    prevState = autoResolveDefense(prevState, pd);
+    if (prevState.phase === 'game_over') return prevState;
+  }
+  prevState = { ...prevState, pendingDefenses: [] };
+
   const rng = new SeededRNG(`${prevState.seed}_year_${prevState.year}`);
   const nextYear = prevState.year + 1;
   const playerCountryId = prevState.playerCountryId;
@@ -236,6 +248,7 @@ export function processYearlyTurn(
   const playerLogs: string[] = [];
   const deceasedCharacters: string[] = [];
   const wars: WarResult[] = [];
+  const pendingDefenses: PendingDefense[] = [];
 
   // 1. 套用玩家決策
   const playerCountry = countries[playerCountryId];
@@ -254,8 +267,8 @@ export function processYearlyTurn(
     executeAIDecision(aiCountry, countries, regions, rng, news, nextYear);
   }
 
-  // 3. 軍事征伐與戰鬥推演
-  resolveMilitaryCampaigns(countries, regions, rng, news, wars, nextYear);
+  // 3. 軍事征伐與戰鬥推演（進犯玩家者轉為待迎戰）
+  resolveMilitaryCampaigns(countries, regions, rng, news, wars, nextYear, playerCountryId, pendingDefenses);
 
   // 4. 各國經濟、人口、行政與糧餉消耗
   for (const countryId of aliveCountryIds) {
@@ -415,8 +428,9 @@ export function processYearlyTurn(
     highlights: [...playerLogs]
   };
 
-  const usedEventIds = prevState.historyLog.map(h => h.eventTitle);
-  const nextEvent = gameOverReason ? null : pickEventForYear(playerCountry, nextYear, rng, usedEventIds);
+  // 避免近 8 年內重複抽到相同事件（historyLog 儲存的是事件標題）
+  const recentEventTitles = [historyRecord, ...prevState.historyLog].slice(0, 8).map(h => h.eventTitle);
+  const nextEvent = gameOverReason ? null : pickEventForYear(playerCountry, nextYear, rng, recentEventTitles);
 
   const turnResult: YearlyTurnResult = {
     year: nextYear,
@@ -437,7 +451,9 @@ export function processYearlyTurn(
     lastTurnResult: turnResult,
     stats: newStats,
     phase: gameOverReason ? 'game_over' : 'turn_summary',
-    gameOverReason
+    gameOverReason,
+    campaignsLeft: CAMPAIGNS_PER_YEAR,
+    pendingDefenses: gameOverReason ? [] : pendingDefenses
   };
 }
 
@@ -538,25 +554,33 @@ function executeAIDecision(
 }
 
 // 模擬邊境各國戰役推演
+const MAX_AI_WARS_PER_YEAR = 3;
+
 function resolveMilitaryCampaigns(
   countries: Record<CountryId, Country>,
   regions: Record<string, Region>,
   rng: SeededRNG,
   news: NewsItem[],
   wars: WarResult[],
-  year: number
+  year: number,
+  playerCountryId: CountryId,
+  pendingDefenses: PendingDefense[]
 ) {
   const aliveCountryIds = (Object.keys(countries) as CountryId[]).filter(id => countries[id].isAlive);
+  let warsThisYear = 0;
 
-  for (const attackerId of aliveCountryIds) {
+  for (const attackerId of rng.shuffle(aliveCountryIds)) {
+    if (warsThisYear >= MAX_AI_WARS_PER_YEAR) break;
+    if (attackerId === playerCountryId) continue;
     const attacker = countries[attackerId];
     if (attacker.military < 90 || attacker.food < 120 || attacker.treasury < 100) continue;
 
-    // 擴張慾望檢測
-    const attackChance = (attacker.ruler.personality.expansion / 100) * 0.45;
+    // 擴張慾望檢測（與玩家交戰中者更積極）
+    const atWarWithPlayer = attacker.atWarWith.includes(playerCountryId);
+    const attackChance = (attacker.ruler.personality.expansion / 100) * 0.45 + (atWarWithPlayer ? 0.2 : 0);
     if (!rng.chance(attackChance)) continue;
 
-    // 尋找接壤之敵對地域
+    // 尋找接壤之敵對地域（交戰國、弱國權重較高）
     const attackerRegions = Object.values(regions).filter(r => r.countryId === attackerId);
     const borderTargets: { region: Region; defender: Country }[] = [];
 
@@ -566,7 +590,10 @@ function resolveMilitaryCampaigns(
         if (neighborRegion && neighborRegion.countryId !== attackerId) {
           const defender = countries[neighborRegion.countryId];
           if (defender && defender.isAlive && !attacker.alliances.includes(defender.id)) {
-            borderTargets.push({ region: neighborRegion, defender });
+            let weight = 1;
+            if (attacker.atWarWith.includes(defender.id)) weight += 2;
+            if (defender.military < attacker.military * 0.8) weight += 1;
+            for (let i = 0; i < weight; i++) borderTargets.push({ region: neighborRegion, defender });
           }
         }
       });
@@ -577,6 +604,28 @@ function resolveMilitaryCampaigns(
     const targetEntry = rng.choice(borderTargets);
     const targetRegion = targetEntry.region;
     const defender = targetEntry.defender;
+    warsThisYear++;
+
+    // 進犯玩家：轉為玩家親自指揮的守城戰
+    if (defender.id === playerCountryId) {
+      if (pendingDefenses.some(p => p.regionId === targetRegion.id)) continue;
+      const committed = Math.min(attacker.military, Math.round(attacker.military * rng.range(45, 70) / 100));
+      attacker.food = Math.max(0, attacker.food - 40);
+      attacker.treasury = Math.max(0, attacker.treasury - 30);
+      if (!attacker.atWarWith.includes(playerCountryId)) attacker.atWarWith.push(playerCountryId);
+      if (!defender.atWarWith.includes(attackerId)) defender.atWarWith.push(attackerId);
+      attacker.relations[playerCountryId] = Math.max(-100, (attacker.relations[playerCountryId] ?? 0) - 30);
+      defender.relations[attackerId] = Math.max(-100, (defender.relations[attackerId] ?? 0) - 30);
+      pendingDefenses.push({ attackerId, regionId: targetRegion.id, attackerTroops: committed });
+      news.push({
+        id: `war_invade_player_${attackerId}_${targetRegion.id}_${year}`,
+        year,
+        text: `⚠️ 邊關告急！${attacker.name} 起兵 ${committed} 萬，兵鋒直指我國 ${targetRegion.chineseName}！`,
+        type: 'war',
+        importance: 'critical'
+      });
+      continue;
+    }
 
     // 統帥能力加成
     const attackerGeneral = attacker.characters.find(c => c.isAlive && c.role === 'general');
@@ -673,8 +722,6 @@ function resolveMilitaryCampaigns(
         importance: 'normal'
       });
     }
-
-    break;
   }
 }
 

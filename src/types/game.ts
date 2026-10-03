@@ -183,6 +183,63 @@ export interface GameOverReason {
   subType: 'unification' | 'natural_death' | 'illness' | 'assassinated' | 'conquered' | 'collapse';
 }
 
+// ===== 戰役對決系統 =====
+export type BattleTactic = 'charge' | 'hold' | 'fire' | 'duel';
+export type ClashTactic = Exclude<BattleTactic, 'duel'>;
+
+export interface BattleSide {
+  countryId: CountryId;
+  generalId: string | null;
+  generalName: string;
+  generalMilitary: number;
+  generalStrategy: number;
+  troops: number;          // 目前投入兵力（萬）
+  initialTroops: number;
+  morale: number;          // 軍心 0-100，歸零即潰敗
+}
+
+export interface BattleRoundLog {
+  round: number;
+  playerTactic: BattleTactic;
+  enemyTactic: ClashTactic;
+  text: string;
+  playerMoraleLoss: number;
+  enemyMoraleLoss: number;
+  playerTroopLoss: number;
+  enemyTroopLoss: number;
+}
+
+export interface ScoutReport {
+  tactic: ClashTactic;
+  confidence: number;      // 0-100
+}
+
+export interface BattleState {
+  id: string;
+  mode: 'attack' | 'defense';
+  regionId: string;
+  player: BattleSide;
+  enemy: BattleSide;
+  round: number;           // 下一個要進行的回合（1 起算）
+  maxRounds: number;
+  enemyNextTactic: ClashTactic;
+  scout: ScoutReport;
+  duelUsed: boolean;
+  log: BattleRoundLog[];
+  finished: boolean;
+  outcome: 'victory' | 'defeat' | 'retreat' | null;
+  decisive: boolean;
+  playerGeneralInjured: boolean;
+  playerGeneralKilled: boolean;
+  enemyGeneralKilled: boolean;
+}
+
+export interface PendingDefense {
+  attackerId: CountryId;
+  regionId: string;
+  attackerTroops: number;
+}
+
 export interface GameState {
   seed: string;
   year: number;
@@ -196,4 +253,6 @@ export interface GameState {
   stats: GameStats;
   phase: 'selection' | 'turn_event' | 'turn_summary' | 'game_over';
   gameOverReason: GameOverReason | null;
+  campaignsLeft: number;              // 本年剩餘征伐令
+  pendingDefenses: PendingDefense[];  // 待玩家迎戰的敵軍入侵
 }

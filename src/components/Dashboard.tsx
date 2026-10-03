@@ -7,6 +7,7 @@ interface DashboardProps {
   state: GameState;
   onMakeChoice: (choice: EventChoice) => void;
   onAttackRegion: (regionId: string) => void;
+  onDefendRegion: (regionId: string) => void;
   onSendDiplomaticTribute: (targetId: CountryId) => void;
   onProposeAlliance: (targetId: CountryId) => void;
   onDeclareWar: (targetId: CountryId) => void;
@@ -33,6 +34,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   state,
   onMakeChoice,
   onAttackRegion,
+  onDefendRegion,
   onSendDiplomaticTribute,
   onProposeAlliance,
   onDeclareWar,
@@ -153,6 +155,38 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
 
+      {/* 邊關告急！敵軍進犯警報橫幅 */}
+      {state.pendingDefenses && state.pendingDefenses.length > 0 && (
+        <div className="bg-gradient-to-r from-red-950 via-orange-950 to-red-950 border-2 border-red-500 rounded-xl p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow-2xl animate-pulse">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">🚨</span>
+            <div>
+              <div className="text-sm font-black text-white flex items-center gap-2">
+                <span>邊關告急！敵國大軍正進犯我國邊境！</span>
+                <span className="px-2 py-0.5 rounded text-[10px] bg-red-600 text-white font-mono font-bold">
+                  {state.pendingDefenses.length} 處要塞受威脅
+                </span>
+              </div>
+              <div className="text-xs text-orange-200 mt-0.5">
+                {state.pendingDefenses.map(pd => {
+                  const att = state.countries[pd.attackerId]?.name;
+                  const reg = state.regions[pd.regionId]?.chineseName;
+                  return `【${att}】起兵 ${pd.attackerTroops} 萬猛攻【${reg}】`;
+                }).join('；')}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onDefendRegion(state.pendingDefenses[0].regionId)}
+              className="px-5 py-2.5 bg-gradient-to-r from-red-600 via-orange-500 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-black text-xs rounded-xl shadow-lg border border-yellow-300 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              🛡️ 親自調將迎戰！
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Main Dual-Column Body: Left Map / Right Yearly Decisions & News */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Left Side: Map and Imperial Actions (7 cols) */}
@@ -162,15 +196,22 @@ export const Dashboard: React.FC<DashboardProps> = ({
             countries={state.countries}
             playerCountryId={state.playerCountryId}
             selectedRegionId={selectedRegionId}
+            pendingDefenseRegionIds={(state.pendingDefenses ?? []).map(p => p.regionId)}
+            campaignsLeft={state.campaignsLeft ?? 2}
             onSelectRegion={(rid) => setSelectedRegionId(rid)}
             onAttackRegion={(rid) => onAttackRegion(rid)}
+            onDefendRegion={(rid) => onDefendRegion(rid)}
             interactive={true}
           />
 
           {/* Imperial Quick Action Commands */}
           <div className="bg-[#141824] border border-[#262e42] rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
-            <span className="text-gray-400 font-bold flex items-center gap-1">
-              <span>⚡</span> 國策政令：
+            <span className="text-gray-400 font-bold flex items-center gap-1.5">
+              <span>⚡</span> 國策政令
+              <span className="text-gray-500 font-normal">|</span>
+              <span className="text-[11px] text-amber-300 font-mono font-medium">
+                本年征伐令: <strong className="text-yellow-400 font-bold">{state.campaignsLeft ?? 2}</strong>/2
+              </span>
             </span>
             <div className="flex flex-wrap items-center gap-2">
               <button

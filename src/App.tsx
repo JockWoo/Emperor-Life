@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { GameState, CountryId, EventChoice } from './types/game';
+import { GameState, CountryId, EventChoice, BattleState, BattleTactic } from './types/game';
 import {
   createInitialGameState,
   processYearlyTurn,
   executePlayerAttack
 } from './systems/simulation';
+import {
+  canLaunchCampaign,
+  createBattle,
+  resolveRound,
+  applyBattleOutcome
+} from './systems/battle';
 import { RulerSelection } from './components/RulerSelection';
 import { Dashboard } from './components/Dashboard';
 import { YearSummaryModal } from './components/YearSummaryModal';
 import { GameOverModal } from './components/GameOverModal';
+import { BattleSetupModal } from './components/BattleSetupModal';
+import { BattleModal } from './components/BattleModal';
 import { SeededRNG } from './utils/random';
 
 export const App: React.FC = () => {
@@ -23,6 +31,16 @@ export const App: React.FC = () => {
   });
 
   const [currentScreen, setCurrentScreen] = useState<'selection' | 'game'>('selection');
+
+  // Battle setup and active tactical battle state
+  const [battleSetup, setBattleSetup] = useState<{
+    mode: 'attack' | 'defense';
+    regionId: string;
+    enemyCountryId: CountryId;
+    enemyTroops?: number;
+  } | null>(null);
+
+  const [currentBattle, setCurrentBattle] = useState<BattleState | null>(null);
 
   // Sync seed in URL
   useEffect(() => {
@@ -58,9 +76,60 @@ export const App: React.FC = () => {
 
   // Manual player military attack on adjacent enemy territory
   const handleAttackRegion = (regionId: string) => {
-    const result = executePlayerAttack(gameState, regionId);
-    alert(result.message);
-    setGameState(result.state);
+    const check = canLaunchCampaign(gameState, regionId);
+    if (!check.ok) {
+      alert(check.reason);
+      return;
+    }
+    const targetRegion = gameState.regions[regionId];
+    if (!targetRegion) return;
+    setBattleSetup({
+      mode: 'attack',
+      regionId,
+      enemyCountryId: targetRegion.countryId
+    });
+  };
+
+  // Defense against incoming invasion
+  const handleDefendRegion = (regionId: string) => {
+    const pending = gameState.pendingDefenses.find(p => p.regionId === regionId) || gameState.pendingDefenses[0];
+    if (!pending) return;
+    setBattleSetup({
+      mode: 'defense',
+      regionId: pending.regionId,
+      enemyCountryId: pending.attackerId,
+      enemyTroops: pending.attackerTroops
+    });
+  };
+
+  // Launch confirmed battle from setup modal
+  const handleConfirmLaunchBattle = (options: { generalId: string | null; commitRatio: number }) => {
+    if (!battleSetup) return;
+    const battle = createBattle(gameState, {
+      mode: battleSetup.mode,
+      regionId: battleSetup.regionId,
+      enemyCountryId: battleSetup.enemyCountryId,
+      playerGeneralId: options.generalId,
+      commitRatio: options.commitRatio,
+      enemyTroops: battleSetup.enemyTroops
+    });
+    setBattleSetup(null);
+    setCurrentBattle(battle);
+  };
+
+  // Select tactic in battle modal
+  const handleSelectBattleTactic = (tactic: BattleTactic | 'retreat') => {
+    if (!currentBattle) return;
+    const updated = resolveRound(gameState, currentBattle, tactic);
+    setCurrentBattle(updated);
+  };
+
+  // Finish battle and apply results
+  const handleFinishBattle = () => {
+    if (!currentBattle) return;
+    const { state: nextState } = applyBattleOutcome(gameState, currentBattle);
+    setGameState(nextState);
+    setCurrentBattle(null);
   };
 
   // Quick Imperial Decrees
@@ -322,6 +391,7 @@ export const App: React.FC = () => {
             state={gameState}
             onMakeChoice={handleMakeChoice}
             onAttackRegion={handleAttackRegion}
+            onDefendRegion={handleDefendRegion}
             onSendDiplomaticTribute={handleSendDiplomaticTribute}
             onProposeAlliance={handleProposeAlliance}
             onDeclareWar={handleDeclareWar}
@@ -330,6 +400,32 @@ export const App: React.FC = () => {
           />
         )}
       </main>
+
+      {/* Battle Setup Modal */}
+      {battleSetup && gameState.regions[battleSetup.regionId] && (
+        <BattleSetupModal
+          mode={battleSetup.mode}
+          region={gameState.regions[battleSetup.regionId]}
+          playerCountry={playerCountry}
+          enemyCountry={gameState.countries[battleSetup.enemyCountryId]}
+          enemyTroops={battleSetup.enemyTroops}
+          campaignsLeft={gameState.campaignsLeft ?? 2}
+          onClose={() => setBattleSetup(null)}
+          onConfirmLaunch={handleConfirmLaunchBattle}
+        />
+      )}
+
+      {/* Interactive Tactical Battle Modal */}
+      {currentBattle && gameState.regions[currentBattle.regionId] && (
+        <BattleModal
+          battle={currentBattle}
+          playerCountry={playerCountry}
+          enemyCountry={gameState.countries[currentBattle.enemy.countryId]}
+          region={gameState.regions[currentBattle.regionId]}
+          onSelectTactic={handleSelectBattleTactic}
+          onFinishBattle={handleFinishBattle}
+        />
+      )}
 
       {/* Modals */}
       {gameState.phase === 'turn_summary' && gameState.lastTurnResult && (
