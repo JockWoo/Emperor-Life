@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { GameOverReason, GameStats, HistoryRecord, Country } from '../types/game';
+import { Legacy } from '../systems/rating';
 
 interface GameOverModalProps {
   reason: GameOverReason;
   stats: GameStats;
   historyLog: HistoryRecord[];
   playerCountry: Country;
+  legacy: Legacy;
   seed: string;
   onRestartSameSeed: () => void;
   onNewSeedGame: () => void;
@@ -18,6 +20,7 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
   stats,
   historyLog,
   playerCountry,
+  legacy,
   seed,
   onRestartSameSeed,
   onNewSeedGame,
@@ -67,6 +70,30 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
           <p className="text-xs text-gray-400 mt-2 max-w-xl mx-auto leading-relaxed">
             {reason.description}
           </p>
+        </div>
+
+        {/* 後世評價 */}
+        <div className="bg-gradient-to-br from-amber-950/40 to-black/40 border border-amber-700/50 rounded-xl p-4 flex flex-col sm:flex-row items-center gap-4">
+          <div className="flex flex-col items-center min-w-[88px]">
+            <div className="text-5xl font-black font-serif text-amber-300 leading-none">{legacy.grade}</div>
+            <div className="text-[10px] text-gray-400 mt-1 font-mono">評分 {legacy.score}</div>
+          </div>
+          <div className="flex-1 text-center sm:text-left">
+            <div className="text-[11px] text-amber-400/90 tracking-widest">後世評價</div>
+            <div className="text-xl font-black text-white font-serif">{legacy.epithet}</div>
+            <div className="text-xs text-gray-300 mt-1 leading-relaxed">{legacy.verdict}</div>
+            <div className="flex flex-wrap gap-1.5 mt-2 justify-center sm:justify-start">
+              {legacy.achievements.map(a => (
+                <span
+                  key={a.name}
+                  title={a.desc}
+                  className="px-2 py-0.5 rounded-full bg-black/50 border border-amber-800/60 text-[11px] text-amber-200"
+                >
+                  {a.icon} {a.name}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Life Stats Matrix */}

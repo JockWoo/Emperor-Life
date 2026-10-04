@@ -18,6 +18,7 @@ import { GameOverModal } from './components/GameOverModal';
 import { BattleSetupModal } from './components/BattleSetupModal';
 import { BattleModal } from './components/BattleModal';
 import { SeededRNG } from './utils/random';
+import { computeLegacy } from './systems/rating';
 
 export const App: React.FC = () => {
   // Read seed from URL or generate fresh
@@ -442,6 +443,7 @@ export const App: React.FC = () => {
           stats={gameState.stats}
           historyLog={gameState.historyLog}
           playerCountry={playerCountry}
+          legacy={computeLegacy(gameState)}
           seed={seed}
           onRestartSameSeed={handleRestartSameSeed}
           onNewSeedGame={handleNewSeedGame}

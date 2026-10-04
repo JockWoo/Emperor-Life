@@ -14,6 +14,8 @@ import {
 } from '../types/game';
 import { SeededRNG } from '../utils/random';
 import { GAME_EVENTS } from '../data/events';
+import { CHAIN_EVENTS, CHOICE_FLAGS, FLAG_EXPIRE_YEARS } from '../data/chainEvents';
+import { pickYearlyGoal, evaluateGoal } from './goals';
 import { INITIAL_RULERS } from '../data/rulers';
 import { INITIAL_CHARACTERS } from '../data/characters';
 import { INITIAL_REGIONS } from '../data/regions';
@@ -91,7 +93,7 @@ export function createInitialGameState(seed?: string, chosenRulerId: CountryId =
     };
   });
 
-  const firstEvent = pickEventForYear(countries[chosenRulerId], 1, rng, []);
+  const firstEvent = pickEventForYear(countries[chosenRulerId], 1, rng, [], {});
 
   return {
     seed: finalSeed,
@@ -129,6 +131,8 @@ export function createInitialGameState(seed?: string, chosenRulerId: CountryId =
       warsLost: 0,
       maxTerritoryPct: 14.3, // 5 / 35 座地域
       maxPopulation: countries[chosenRulerId].population,
+      goalsCompleted: 0,
+      goalsFailed: 0,
       milestones: [
         { year: 1, text: `元年：${countries[chosenRulerId].ruler.name} 於 ${countries[chosenRulerId].capitalName} 登基稱尊。` }
       ]
@@ -136,26 +140,61 @@ export function createInitialGameState(seed?: string, chosenRulerId: CountryId =
     phase: 'turn_event',
     gameOverReason: null,
     campaignsLeft: CAMPAIGNS_PER_YEAR,
-    pendingDefenses: []
+    pendingDefenses: [],
+    flags: {},
+    goalHistory: [],
+    currentGoal: pickYearlyGoal(
+      {
+        countries,
+        regions,
+        playerCountryId: chosenRulerId,
+        stats: { warsStarted: 0, warsWon: 0, warsLost: 0, maxTerritoryPct: 14.3, maxPopulation: 0, milestones: [] }
+      },
+      new SeededRNG(`${finalSeed}_goal_1`)
+    )
   };
 }
 
 // 抽取該年度事件
-export function pickEventForYear(country: Country, year: number, rng: SeededRNG, usedEventIds: string[]): GameEvent {
+// 1. 若先前的抉擇埋下伏筆且時機已到，高機率觸發連鎖事件
+// 2. 否則依國情加權：缺糧多災荒、缺錢多財政事件、民心不穩多動盪事件
+export function pickEventForYear(
+  country: Country,
+  year: number,
+  rng: SeededRNG,
+  usedEventIds: string[],
+  flags: Record<string, number> = {}
+): GameEvent {
+  const isUsable = (e: GameEvent) => !usedEventIds.includes(e.id) && !usedEventIds.includes(e.title);
+
+  const dueChain = CHAIN_EVENTS.filter(e => {
+    if (!isUsable(e) || !e.requiresFlag) return false;
+    const setYear = flags[e.requiresFlag];
+    return setYear !== undefined && year - setYear >= (e.minDelay ?? 1);
+  });
+  if (dueChain.length > 0 && rng.chance(0.75)) {
+    return rng.choice(dueChain);
+  }
+
   const eligible = GAME_EVENTS.filter(e => {
-    if (usedEventIds.includes(e.id) || usedEventIds.includes(e.title)) {
-      return false;
-    }
-    if (e.condition && !e.condition(country, year)) {
-      return false;
-    }
+    if (!isUsable(e)) return false;
+    if (e.condition && !e.condition(country, year)) return false;
     return true;
   });
-
   if (eligible.length === 0) {
     return rng.choice(GAME_EVENTS);
   }
-  return rng.choice(eligible);
+
+  const weightOf = (e: GameEvent): number => {
+    switch (e.category) {
+      case 'disaster': return country.food < 300 ? 2.5 : 1;
+      case 'economy': return country.treasury < 300 ? 2.2 : 1;
+      case 'military': return country.military < 110 ? 1.8 : 1;
+      case 'politics': return country.stability < 65 ? 2.5 : 1;
+      default: return 1;
+    }
+  };
+  return rng.weightedChoice(eligible, eligible.map(weightOf));
 }
 
 // 套用玩家決策的影響
@@ -257,6 +296,17 @@ export function processYearlyTurn(
     playerLogs.push(playerChoice.effects.logMessage);
   }
   playerLogs.push(...choiceEffects);
+
+  // 1b. 本次抉擇可能埋下伏筆；過期的伏筆自然消散
+  const flags: Record<string, number> = { ...(prevState.flags ?? {}) };
+  const planted = CHOICE_FLAGS[playerChoice.id];
+  if (planted) {
+    flags[planted.flag] = prevState.year;
+    playerLogs.push(`🪤 ${planted.hint}`);
+  }
+  for (const [name, setYear] of Object.entries(flags)) {
+    if (nextYear - setYear > FLAG_EXPIRE_YEARS) delete flags[name];
+  }
 
   // 2. 其餘六國自主 AI 決策
   const aliveCountryIds = (Object.keys(countries) as CountryId[]).filter(id => countries[id].isAlive);
@@ -361,6 +411,21 @@ export function processYearlyTurn(
     });
   }
 
+  // 5b. 年度目標結算
+  const goalResult = prevState.currentGoal
+    ? evaluateGoal(prevState.currentGoal, {
+        countries,
+        regions,
+        playerCountryId,
+        stats: prevState.stats
+      })
+    : null;
+  if (goalResult?.success) {
+    playerLogs.push(`🎯 達成年度目標「${goalResult.goal.title}」！${goalResult.rewardLogs.join('、')}`);
+  } else if (goalResult) {
+    playerLogs.push(`🎯 未能達成年度目標「${goalResult.goal.title}」。`);
+  }
+
   // 6. 玩家勝利與終局判斷
   const playerOwnedRegions = Object.values(regions).filter(r => r.countryId === playerCountryId);
   const totalRegionsCount = Object.keys(regions).length;
@@ -405,7 +470,9 @@ export function processYearlyTurn(
   const newStats = {
     ...prevState.stats,
     maxTerritoryPct: Math.max(prevState.stats.maxTerritoryPct, playerTerritoryPct),
-    maxPopulation: Math.max(prevState.stats.maxPopulation, playerCountry.population)
+    maxPopulation: Math.max(prevState.stats.maxPopulation, playerCountry.population),
+    goalsCompleted: (prevState.stats.goalsCompleted ?? 0) + (goalResult?.success ? 1 : 0),
+    goalsFailed: (prevState.stats.goalsFailed ?? 0) + (goalResult && !goalResult.success ? 1 : 0)
   };
 
   if (playerOwnedRegions.length >= 10 && !newStats.milestones.some(m => m.text.includes('10 座'))) {
@@ -430,14 +497,26 @@ export function processYearlyTurn(
 
   // 避免近 8 年內重複抽到相同事件（historyLog 儲存的是事件標題）
   const recentEventTitles = [historyRecord, ...prevState.historyLog].slice(0, 8).map(h => h.eventTitle);
-  const nextEvent = gameOverReason ? null : pickEventForYear(playerCountry, nextYear, rng, recentEventTitles);
+  const nextEvent = gameOverReason ? null : pickEventForYear(playerCountry, nextYear, rng, recentEventTitles, flags);
+  if (nextEvent?.requiresFlag && nextEvent.consumeFlag !== false) {
+    delete flags[nextEvent.requiresFlag];
+  }
+
+  const nextGoal = gameOverReason
+    ? null
+    : pickYearlyGoal(
+        { countries, regions, playerCountryId, stats: newStats },
+        new SeededRNG(`${prevState.seed}_goal_${nextYear}`),
+        prevState.currentGoal?.id
+      );
 
   const turnResult: YearlyTurnResult = {
     year: nextYear,
     news: [...news],
     wars: [...wars],
     playerEffectsSummary: playerLogs,
-    deceasedCharacters
+    deceasedCharacters,
+    goalResult
   };
 
   return {
@@ -453,7 +532,12 @@ export function processYearlyTurn(
     phase: gameOverReason ? 'game_over' : 'turn_summary',
     gameOverReason,
     campaignsLeft: CAMPAIGNS_PER_YEAR,
-    pendingDefenses: gameOverReason ? [] : pendingDefenses
+    pendingDefenses: gameOverReason ? [] : pendingDefenses,
+    flags,
+    currentGoal: nextGoal,
+    goalHistory: goalResult
+      ? [{ year: nextYear, title: goalResult.goal.title, success: goalResult.success }, ...(prevState.goalHistory ?? [])]
+      : prevState.goalHistory ?? []
   };
 }
 

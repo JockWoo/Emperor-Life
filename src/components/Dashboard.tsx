@@ -155,6 +155,23 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
 
+      {/* 本年度目標 */}
+      {state.currentGoal && (
+        <div className="bg-gradient-to-r from-amber-950/60 via-[#1a1608] to-amber-950/60 border border-amber-600/50 rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">🎯</span>
+            <span className="font-black text-amber-300">本年目標：{state.currentGoal.title}</span>
+            <span className="text-gray-300">{state.currentGoal.description}</span>
+          </div>
+          <div className="flex items-center gap-3 text-[11px]">
+            <span className="text-emerald-300">獎勵：{state.currentGoal.rewardText}</span>
+            <span className="text-gray-500 font-mono">
+              已達成 {state.stats.goalsCompleted ?? 0} / 失敗 {state.stats.goalsFailed ?? 0}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* 邊關告急！敵軍進犯警報橫幅 */}
       {state.pendingDefenses && state.pendingDefenses.length > 0 && (
         <div className="bg-gradient-to-r from-red-950 via-orange-950 to-red-950 border-2 border-red-500 rounded-xl p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow-2xl animate-pulse">

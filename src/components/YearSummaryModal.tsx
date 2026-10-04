@@ -54,6 +54,30 @@ export const YearSummaryModal: React.FC<YearSummaryModalProps> = ({
           </div>
         )}
 
+        {/* 年度目標結算 */}
+        {turnResult.goalResult && (
+          <div
+            className={`rounded-lg p-3 text-xs border ${
+              turnResult.goalResult.success
+                ? 'bg-emerald-950/30 border-emerald-700/60 text-emerald-200'
+                : 'bg-red-950/20 border-red-900/50 text-red-200'
+            }`}
+          >
+            <div className="font-bold flex items-center gap-1.5">
+              <span>🎯</span>
+              <span>
+                年度目標「{turnResult.goalResult.goal.title}」
+                {turnResult.goalResult.success ? '：達成！' : '：未達成'}
+              </span>
+            </div>
+            <div className="text-[11px] opacity-80 mt-0.5">
+              {turnResult.goalResult.success
+                ? `獎勵：${turnResult.goalResult.rewardLogs.join('、') || turnResult.goalResult.goal.rewardText}`
+                : turnResult.goalResult.goal.description}
+            </div>
+          </div>
+        )}
+
         {/* Military Battles of the Year */}
         {turnResult.wars.length > 0 && (
           <div className="bg-red-950/30 border border-red-900/50 rounded-lg p-3 text-xs">

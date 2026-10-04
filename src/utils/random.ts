@@ -42,6 +42,18 @@ export class SeededRNG {
     return arr[idx];
   }
 
+  // Pick element with probability proportional to its weight
+  weightedChoice<T>(arr: T[], weights: number[]): T {
+    const total = weights.reduce((a, b) => a + Math.max(0, b), 0);
+    if (total <= 0) return this.choice(arr);
+    let r = this.next() * total;
+    for (let i = 0; i < arr.length; i++) {
+      r -= Math.max(0, weights[i]);
+      if (r < 0) return arr[i];
+    }
+    return arr[arr.length - 1];
+  }
+
   // Shuffle array copy
   shuffle<T>(arr: T[]): T[] {
     const copy = [...arr];

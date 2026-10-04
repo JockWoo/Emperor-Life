@@ -1,6 +1,9 @@
 import { createInitialGameState, processYearlyTurn, executePlayerAttack } from '../systems/simulation';
 import { canLaunchCampaign, createBattle, resolveRound, applyBattleOutcome } from '../systems/battle';
 import { SeededRNG } from '../utils/random';
+import { CHAIN_EVENTS } from '../data/chainEvents';
+import { computeLegacy } from '../systems/rating';
+import { EventChoice } from '../types/game';
 import { CountryId } from '../types/game';
 
 function runTests() {
@@ -137,6 +140,48 @@ function runTests() {
   const battleResult = applyBattleOutcome(battleState, battle);
   console.log(`  ✓ Outcome applied: ${battleResult.message}`);
   console.log(`    Qin military: ${battleResult.state.countries.qin.military}萬, Campaigns left: ${battleResult.state.campaignsLeft}`);
+
+  // Test 6: 事件連鎖 / 年度目標 / 後世評價
+  console.log('\nTest 6: Verifying Event Chains, Yearly Goals & Legacy...');
+  let cs = createInitialGameState('chain_test_seed', 'han');
+  if (!cs.currentGoal) throw new Error('Initial yearly goal missing!');
+  const plant: EventChoice = {
+    id: 'temple_melt_bells_for_coins', text: '測試：熔毀銅像', description: '', previewEffects: '', effects: {}
+  };
+  cs = processYearlyTurn(cs, plant);
+  if (cs.flags?.['monk_resentment'] === undefined) throw new Error('Flag was not planted!');
+  console.log('  ✓ Choice planted flag: monk_resentment');
+
+  let chainSeen: string | null = null;
+  for (let i = 0; i < 8 && cs.phase !== 'game_over'; i++) {
+    if (cs.currentEvent && CHAIN_EVENTS.some(e => e.id === cs.currentEvent!.id)) {
+      chainSeen = cs.currentEvent.title;
+      break;
+    }
+    cs = processYearlyTurn(cs, cs.currentEvent!.choices[0]);
+  }
+  if (!chainSeen) throw new Error('Chain event never triggered after planting a flag!');
+  if (cs.flags?.['monk_resentment'] !== undefined) throw new Error('Flag should be consumed when chain event triggers!');
+  console.log(`  ✓ Chain event triggered: ${chainSeen}`);
+
+  // 長局穩定性：各國跑 40 年，檢查目標與連鎖不會崩壞
+  const ids: CountryId[] = ['qin', 'han', 'sui', 'tang', 'song', 'ming', 'qing'];
+  let chainCount = 0;
+  ids.forEach(cid => {
+    let st = createInitialGameState(`long_run_${cid}`, cid);
+    for (let y = 0; y < 40 && st.phase !== 'game_over'; y++) {
+      if (!st.currentEvent) throw new Error('Missing event during long run!');
+      if (!st.currentGoal) throw new Error('Missing goal during long run!');
+      if (CHAIN_EVENTS.some(e => e.id === st.currentEvent!.id)) chainCount++;
+      const pick = st.currentEvent.choices[y % st.currentEvent.choices.length];
+      st = processYearlyTurn(st, pick);
+    }
+    const done = (st.stats.goalsCompleted ?? 0) + (st.stats.goalsFailed ?? 0);
+    if (done !== (st.goalHistory?.length ?? 0)) throw new Error('Goal stats mismatch!');
+    const legacy = computeLegacy(st);
+    console.log(`  ✓ ${cid}: ${st.year - 1} yrs, goals ${st.stats.goalsCompleted}/${done}, legacy ${legacy.grade} 「${legacy.epithet}」`);
+  });
+  console.log(`  ✓ Chain events seen across long runs: ${chainCount}`);
 
   console.log('\n=== ALL SIMULATION & BATTLE TESTS PASSED SUCCESSFULLY! ===');
 }

@@ -127,6 +127,10 @@ export interface GameEvent {
   historicalContext?: string;
   choices: EventChoice[];
   condition?: (country: Country, year: number) => boolean;
+  // ===== 事件連鎖 =====
+  requiresFlag?: string;   // 需要先前埋下此伏筆才會出現
+  minDelay?: number;       // 伏筆埋下後至少隔幾年才可觸發
+  consumeFlag?: boolean;   // 觸發後是否消耗該伏筆（預設 true）
 }
 
 export interface NewsItem {
@@ -153,6 +157,7 @@ export interface YearlyTurnResult {
   wars: WarResult[];
   playerEffectsSummary: string[];
   deceasedCharacters: string[];
+  goalResult?: GoalResult | null;
 }
 
 export interface HistoryRecord {
@@ -168,6 +173,8 @@ export interface HistoryRecord {
 }
 
 export interface GameStats {
+  goalsCompleted?: number;
+  goalsFailed?: number;
   warsStarted: number;
   warsWon: number;
   warsLost: number;
@@ -240,8 +247,26 @@ export interface PendingDefense {
   attackerTroops: number;
 }
 
+// ===== 年度目標 =====
+export interface YearlyGoal {
+  id: string;
+  title: string;
+  description: string;
+  rewardText: string;
+  baseline: number;        // 年初基準值（依目標類型而定）
+}
+
+export interface GoalResult {
+  goal: YearlyGoal;
+  success: boolean;
+  rewardLogs: string[];
+}
+
 export interface GameState {
   seed: string;
+  flags?: Record<string, number>;     // 伏筆名稱 → 埋下的年份
+  currentGoal?: YearlyGoal | null;    // 本年度目標
+  goalHistory?: { year: number; title: string; success: boolean }[];
   year: number;
   playerCountryId: CountryId;
   countries: Record<CountryId, Country>;
