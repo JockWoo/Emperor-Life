@@ -86,9 +86,9 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     baseWealth: 45,
     baseFood: 40,
     terrain: 'plains',
-    path: 'M 260,250 L 340,240 L 360,290 L 290,290 Z',
-    centerX: 310,
-    centerY: 270,
+    path: 'M 260,250 L 340,240 L 345,290 L 285,290 Z',
+    centerX: 308,
+    centerY: 268,
     isCapital: true,
     neighbors: ['qin_xianyang', 'sui_hongnong', 'han_nanyang', 'sui_hedong']
   },
@@ -101,10 +101,10 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     baseWealth: 36,
     baseFood: 42,
     terrain: 'plains',
-    path: 'M 290,290 L 360,290 L 370,370 L 270,340 Z',
-    centerX: 325,
+    path: 'M 285,290 L 355,290 L 365,370 L 270,340 Z',
+    centerX: 318,
     centerY: 325,
-    neighbors: ['han_sanqin', 'qin_hanzhong', 'qin_ba', 'han_runan', 'song_luoyang']
+    neighbors: ['han_sanqin', 'qin_hanzhong', 'qin_ba', 'han_runan', 'song_luoyang', 'song_yingchuan', 'ming_jingnan']
   },
   han_runan: {
     id: 'han_runan',
@@ -115,10 +115,10 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     baseWealth: 35,
     baseFood: 40,
     terrain: 'plains',
-    path: 'M 360,290 L 440,290 L 450,370 L 370,370 Z',
-    centerX: 405,
+    path: 'M 355,290 L 420,290 L 430,370 L 365,370 Z',
+    centerX: 393,
     centerY: 330,
-    neighbors: ['han_nanyang', 'song_yingchuan', 'han_sishui', 'ming_huizhou']
+    neighbors: ['han_nanyang', 'song_yingchuan', 'han_sishui', 'han_chuhan', 'ming_huizhou']
   },
   han_sishui: {
     id: 'han_sishui',
@@ -129,10 +129,10 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     baseWealth: 32,
     baseFood: 36,
     terrain: 'river',
-    path: 'M 440,290 L 520,290 L 520,370 L 450,370 Z',
-    centerX: 480,
-    centerY: 330,
-    neighbors: ['han_runan', 'song_guide', 'han_chuhan', 'ming_yingtian']
+    path: 'M 490,280 L 565,290 L 560,370 L 490,370 Z',
+    centerX: 526,
+    centerY: 328,
+    neighbors: ['han_runan', 'song_guide', 'song_huaiyang', 'han_chuhan', 'ming_yingtian']
   },
   han_chuhan: {
     id: 'han_chuhan',
@@ -143,8 +143,8 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     baseWealth: 30,
     baseFood: 30,
     terrain: 'hills',
-    path: 'M 450,370 L 520,370 L 510,440 L 430,440 Z',
-    centerX: 475,
+    path: 'M 430,370 L 525,370 L 515,440 L 430,440 Z',
+    centerX: 476,
     centerY: 405,
     neighbors: ['han_sishui', 'ming_yingtian', 'ming_huizhou', 'han_runan']
   },
@@ -163,7 +163,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     centerX: 380,
     centerY: 205,
     isCapital: true,
-    neighbors: ['sui_hedong', 'sui_taiyuan', 'sui_hongnong', 'tang_jinyang']
+    neighbors: ['sui_hedong', 'sui_taiyuan', 'sui_hongnong', 'sui_shangdang', 'tang_jinyang']
   },
   sui_hedong: {
     id: 'sui_hedong',
@@ -188,9 +188,9 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     baseWealth: 34,
     baseFood: 30,
     terrain: 'mountains',
-    path: 'M 260,250 L 340,240 L 360,290 L 290,290 Z',
-    centerX: 310,
-    centerY: 260,
+    path: 'M 340,240 L 420,240 L 420,290 L 345,290 Z',
+    centerX: 382,
+    centerY: 265,
     neighbors: ['sui_daxing', 'sui_hedong', 'qin_xianyang', 'han_sanqin', 'song_luoyang']
   },
   sui_taiyuan: {
@@ -309,7 +309,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     centerX: 535,
     centerY: 160,
     isCapital: true,
-    neighbors: ['song_luoyang', 'song_guide', 'sui_shangdang', 'tang_youzhou', 'qing_ningyuan']
+    neighbors: ['song_luoyang', 'song_guide', 'song_huaiyang', 'sui_shangdang', 'tang_youzhou', 'qing_ningyuan']
   },
   song_luoyang: {
     id: 'song_luoyang',
@@ -410,7 +410,7 @@ export const INITIAL_REGIONS: Record<string, Region> = {
     path: 'M 430,440 L 530,440 L 540,530 L 430,520 Z',
     centerX: 485,
     centerY: 480,
-    neighbors: ['ming_yingtian', 'ming_jiangxi', 'han_chuhan', 'han_runan']
+    neighbors: ['ming_yingtian', 'ming_jiangxi', 'ming_liangzhe', 'han_chuhan', 'han_runan']
   },
   ming_jiangxi: {
     id: 'ming_jiangxi',
