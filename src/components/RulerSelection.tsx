@@ -98,7 +98,6 @@ export const RulerSelection: React.FC<RulerSelectionProps> = ({
           <Map
             regions={regions}
             countries={countries}
-            playerCountryId={selectedRulerId}
             onSelectRegion={(rid) => {
               const r = regions[rid];
               if (r) {
